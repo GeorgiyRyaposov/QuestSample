@@ -9,12 +9,16 @@ namespace Code.Scripts.Views.MainMenuViews
     public class MainMenuPanelView : MonoBehaviour
     {
         [SerializeField] private Button _startGameButton;
-        [SerializeField] private Button _exitButton;
+        [SerializeField] private Button _continueGameButton;
+        [SerializeField] private Button _quitButton;
 
         private void Start()
         {
             _startGameButton.onClick.AddListener(StartGame);
-            _exitButton.onClick.AddListener(ExitGame);
+            _quitButton.onClick.AddListener(QuitGame);
+            
+            //todo: check game saves
+            _continueGameButton.interactable = false;
         }
 
         private async void StartGame()
@@ -29,7 +33,7 @@ namespace Code.Scripts.Views.MainMenuViews
             }
         }
 
-        private void ExitGame()
+        private void QuitGame()
         {
             Application.Quit();
         }
