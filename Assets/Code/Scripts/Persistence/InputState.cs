@@ -6,8 +6,7 @@ namespace Code.Scripts.Persistence
     {
         public Vector2 Move;
         public Vector2 Look;
-        public bool Jump;
-        public bool Walk;
+        public bool Sprint;
 
         public bool IsCurrentDeviceMouse;
     }

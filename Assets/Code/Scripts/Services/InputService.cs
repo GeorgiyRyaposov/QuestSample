@@ -88,7 +88,7 @@ namespace Code.Scripts.Services
 
         private void JumpInput(bool newJumpState)
         {
-            State.Jump = newJumpState;
+            
         }
 
         private void SprintInput(bool newSprintState)
