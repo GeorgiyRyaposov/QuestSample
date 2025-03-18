@@ -39,34 +39,14 @@ namespace Code.Scripts.Services
             LookInput(context.ReadValue<Vector2>());
         }
 
-        public void OnAttack(InputAction.CallbackContext context)
+        public void OnZoom(InputAction.CallbackContext context)
         {
-            
+            ZoomInput(-context.ReadValue<Vector2>().y);
         }
 
         public void OnInteract(InputAction.CallbackContext context)
         {
-            
-        }
-
-        public void OnCrouch(InputAction.CallbackContext context)
-        {
-            
-        }
-
-        public void OnJump(InputAction.CallbackContext context)
-        {
-            JumpInput(context.ReadValueAsButton());
-        }
-
-        public void OnPrevious(InputAction.CallbackContext context)
-        {
-            
-        }
-
-        public void OnNext(InputAction.CallbackContext context)
-        {
-            
+            InteractInput(context.ReadValueAsButton());
         }
 
         public void OnSprint(InputAction.CallbackContext context)
@@ -85,15 +65,20 @@ namespace Code.Scripts.Services
         {
             State.Look = newLookDirection;
         }
-
-        private void JumpInput(bool newJumpState)
+        
+        private void ZoomInput(float value)
         {
-            
+            State.Zoom = value;
         }
 
         private void SprintInput(bool newSprintState)
         {
-            
+            State.Sprint = newSprintState;
+        }
+        
+        private void InteractInput(bool value)
+        {
+            State.Interact = value;
         }
     }
 }

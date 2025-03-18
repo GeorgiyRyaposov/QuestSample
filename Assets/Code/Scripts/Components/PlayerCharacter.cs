@@ -9,29 +9,37 @@ namespace Code.Scripts.Components
     public class PlayerCharacter : MonoBehaviour
     {
         [Tooltip("Useful for rough ground")]
-        public float GroundedOffset = -0.14f;
+        [SerializeField]
+        private float _groundedOffset = -0.14f;
 
         [Tooltip("The radius of the grounded check. Should match the radius of the CharacterController")]
-        public float GroundedRadius = 0.28f;
+        [SerializeField]
+        private float _groundedRadius = 0.28f;
 
         [Tooltip("What layers the character uses as ground")]
-        public LayerMask GroundLayers;
+        [SerializeField]
+        private LayerMask _groundLayers;
 
         [Header("Cinemachine")]
         [Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
-        public GameObject CinemachineCameraTarget;
+        [SerializeField]
+        private GameObject _cinemachineCameraTarget;
 
         [Tooltip("How far in degrees can you move the camera up")]
-        public float TopClamp = 70.0f;
+        [SerializeField]
+        private float _topClamp = 70.0f;
 
         [Tooltip("How far in degrees can you move the camera down")]
-        public float BottomClamp = -30.0f;
+        [SerializeField]
+        private float _bottomClamp = -30.0f;
 
         [Tooltip("Additional degress to override the camera. Useful for fine tuning camera position when locked")]
-        public float CameraAngleOverride;
+        [SerializeField]
+        private float _cameraAngleOverride;
 
         [Tooltip("For locking the camera position on all axis")]
-        public bool LockCameraPosition;
+        [SerializeField]
+        private bool _lockCameraPosition;
 
         private PlayerCharacterConfig _cfg;
         
@@ -57,6 +65,7 @@ namespace Code.Scripts.Components
         [SerializeField] private CharacterController _controller;
         
         private InputState _input;
+        private InputSettings _inputSettings;
         private Transform _mainCamera;
 
         private const float _threshold = 0.01f;
@@ -72,9 +81,10 @@ namespace Code.Scripts.Components
 
         private void Start()
         {
-            _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
+            _cinemachineTargetYaw = _cinemachineCameraTarget.transform.rotation.eulerAngles.y;
 
             _input = Mediator.InputState;
+            _inputSettings = Mediator.InputSettings;
             _cfg = Mediator.Get<AssetsService>().playerCharacterConfig;
             
             AssignAnimationIDs();
@@ -103,8 +113,8 @@ namespace Code.Scripts.Components
         private void GroundedCheck()
         {
             // set sphere position, with offset
-            var spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z);
-            var grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
+            var spherePosition = new Vector3(transform.position.x, transform.position.y - _groundedOffset, transform.position.z);
+            var grounded = Physics.CheckSphere(spherePosition, _groundedRadius, _groundLayers, QueryTriggerInteraction.Ignore);
 
             // update animator if using character
             _animator.SetBool(_animIDGrounded, grounded);
@@ -113,21 +123,22 @@ namespace Code.Scripts.Components
         private void CameraRotation()
         {
             // if there is an input and camera position is not fixed
-            if (_input.Look.sqrMagnitude >= _threshold && !LockCameraPosition)
+            if (_input.Look.sqrMagnitude >= _threshold && !_lockCameraPosition)
             {
                 //Don't multiply mouse input by Time.deltaTime;
-                var deltaTimeMultiplier = _input.IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
-
+                var deltaTimeMultiplier = _input.IsCurrentDeviceMouse ? _inputSettings.MouseSensitivity : Time.deltaTime;
+                var pitchSign = _inputSettings.InvertMouse ? -1 : 1;
+                
                 _cinemachineTargetYaw += _input.Look.x * deltaTimeMultiplier;
-                _cinemachineTargetPitch += _input.Look.y * deltaTimeMultiplier;
+                _cinemachineTargetPitch += _input.Look.y * deltaTimeMultiplier * pitchSign;
             }
 
             // clamp our rotations so our values are limited 360 degrees
             _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
-            _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
+            _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, _bottomClamp, _topClamp);
 
             // Cinemachine will follow this target
-            CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
+            _cinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + _cameraAngleOverride,
                 _cinemachineTargetYaw, 0.0f);
         }
 

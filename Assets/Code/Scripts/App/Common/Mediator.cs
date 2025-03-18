@@ -14,6 +14,7 @@ namespace Code.Scripts.App.Common
         /// </summary>
         public static SessionStateData SessionState { get; private set; } = new();
         public static InputState InputState { get; private set; }
+        public static InputSettings InputSettings { get; private set; }
 
         private static ServiceLocator _serviceLocator;
 
@@ -38,6 +39,7 @@ namespace Code.Scripts.App.Common
             GameState = gameState;
             SessionState = gameState.SessionState;
             InputState = gameState.InputState;
+            InputSettings = gameState.InputSettings;
         }
     }
 }
