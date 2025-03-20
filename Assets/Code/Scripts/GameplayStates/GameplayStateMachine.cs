@@ -5,13 +5,14 @@ namespace Code.Scripts.GameplayStates
 {
     public class GameplayStateMachine : MonoBehaviour
     {
-        
         private State _activeCharacterState;
-        private State _activeState = new State();
-        private State _emptyState = new State();
+        private State _activeState = new();
+        private readonly State _emptyState = new();
         
         public void Setup()
         {
+            DontDestroyOnLoad(gameObject);
+            
             _activeCharacterState = new ActivePlayerCharacterState();
         }
 
