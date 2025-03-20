@@ -3,6 +3,7 @@ using Code.Scripts.App.Common;
 using Code.Scripts.Configs;
 using Code.Scripts.Persistence;
 using Code.Scripts.Services;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Code.Scripts.Components
@@ -261,6 +262,30 @@ namespace Code.Scripts.Components
             if (lfAngle < -360f) lfAngle += 360f;
             if (lfAngle > 360f) lfAngle -= 360f;
             return Mathf.Clamp(lfAngle, lfMin, lfMax);
+        }
+        
+        public async UniTask PlayPickUpAnimation(InteractionItem sceneItem)
+        {
+            await FaceToTarget(sceneItem.transform);
+
+            // for (var t = 0f; t < 1f; t += Time.deltaTime * 2f)
+            // {
+            //     
+            // }
+        }
+
+        private async UniTask FaceToTarget(Transform target)
+        {
+            var rotateFrom = transform.rotation;
+            var faceTo = target.position - transform.position;
+            var rotateToEuler = Quaternion.LookRotation(faceTo.normalized, Vector3.up).eulerAngles;
+            var rotateTo = Quaternion.Euler(0, rotateToEuler.y, 0);
+            
+            for (var t = 0f; t < 1f; t += Time.deltaTime * 2f)
+            {
+                transform.rotation = Quaternion.Slerp(rotateFrom, rotateTo, t);
+                await UniTask.WaitForEndOfFrame();
+            }
         }
 
         private void OnFootstep(AnimationEvent animationEvent)

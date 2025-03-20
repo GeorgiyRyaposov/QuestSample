@@ -15,7 +15,6 @@ namespace Code.Scripts.App.AppState
             {
                 var stateMachineGameObj = new GameObject("GameplayStateMachine", typeof(GameplayStateMachine));
                 Mediator.GameplayStateMachine = stateMachineGameObj.GetComponent<GameplayStateMachine>();
-
                 Mediator.GameplayStateMachine.Setup();
             }
             

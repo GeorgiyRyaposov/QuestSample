@@ -10,11 +10,9 @@ namespace Code.Scripts.GameplayStates
         private State _activeState = new State();
         private State _emptyState = new State();
         
-        public UniTask Setup()
+        public void Setup()
         {
             _activeCharacterState = new ActivePlayerCharacterState();
-            
-            return UniTask.CompletedTask;
         }
 
         public async UniTask EnterInitialState()

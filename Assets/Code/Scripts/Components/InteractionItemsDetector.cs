@@ -10,7 +10,7 @@ namespace Code.Scripts.Components
         [SerializeField] private float _detectPeriod = 0.3f;
         [SerializeField] private LayerMask _itemsLayers;
 
-        private readonly Collider[] _collidersBuffer = new Collider[42];
+        private readonly Collider[] _collidersBuffer = new Collider[10];
         private float _elapsed;
         private int _prevHits;
 
