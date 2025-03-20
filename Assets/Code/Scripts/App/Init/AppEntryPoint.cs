@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Code.Scripts.App.AppState;
 using Code.Scripts.App.Common;
 using Code.Scripts.App.ScenesManagement;
 using Code.Scripts.Services;
 using Code.Scripts.Services.Common;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Code.Scripts.App.Init
@@ -14,7 +14,7 @@ namespace Code.Scripts.App.Init
     {
         [SerializeField] private ServicesContainer _servicesContainer;
         
-        private async void Awake()
+        private void Awake()
         {
             DontDestroyOnLoad(gameObject);
             
@@ -22,7 +22,7 @@ namespace Code.Scripts.App.Init
             
             try
             {
-                await SetupAppState();
+                SetupAppState().Forget();
             }
             catch (Exception e)
             {
@@ -30,7 +30,7 @@ namespace Code.Scripts.App.Init
             }
         }
 
-        private static async Task SetupAppState()
+        private static async UniTaskVoid SetupAppState()
         {
             var sceneName = ScenesConsts.GetCurrentScene();
             switch (sceneName)
@@ -57,6 +57,8 @@ namespace Code.Scripts.App.Init
             {
                 new GameStateService(),
                 new InputService(),
+                new InteractionsService(),
+                
             };
             
             foreach (var service in services)

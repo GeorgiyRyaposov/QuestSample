@@ -1,19 +1,19 @@
-﻿using System.Threading.Tasks;
-using Cysharp.Threading.Tasks;
-using UnityEngine;
+﻿using Cysharp.Threading.Tasks;
 
-namespace Code.Scripts.App.AppState
+namespace Code.Scripts.GameplayStates
 {
-    public class AppState : ScriptableObject, IAppState
+    public class State
     {
         public virtual UniTask Enter()
         {
             return UniTask.CompletedTask;
         }
-
+        
         public virtual UniTask Exit()
         {
             return UniTask.CompletedTask;
         }
+        
+        public virtual void OnUpdate() { }
     }
 }

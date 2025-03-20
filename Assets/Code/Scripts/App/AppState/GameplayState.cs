@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
-using Code.Scripts.App.Common;
+﻿using Code.Scripts.App.Common;
 using Code.Scripts.App.ScenesManagement;
-using Code.Scripts.Services;
+using Code.Scripts.GameplayStates;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Code.Scripts.App.AppState
@@ -9,20 +9,24 @@ namespace Code.Scripts.App.AppState
     [CreateAssetMenu(menuName = "Data/AppState/GameplayState", fileName = "GameplayState")]
     public class GameplayState : AppState
     {
-        public override Task Enter()
+        public override async UniTask Enter()
         {
+            if (Mediator.GameplayStateMachine == null)
+            {
+                var stateMachineGameObj = new GameObject("GameplayStateMachine", typeof(GameplayStateMachine));
+                Mediator.GameplayStateMachine = stateMachineGameObj.GetComponent<GameplayStateMachine>();
+
+                Mediator.GameplayStateMachine.Setup();
+            }
+            
             Preloader.Hide();
-            
-            Mediator.Get<InputService>().EnablePlayerInput();
-            
-            return Task.CompletedTask;
+
+            await Mediator.GameplayStateMachine.EnterInitialState();
         }
 
-        public override Task Exit()
+        public override async UniTask Exit()
         {
-            Mediator.Get<InputService>().DisablePlayerInput();
-            
-            return Task.CompletedTask;
+            await Mediator.GameplayStateMachine.Dispose();
         }
     }
 }

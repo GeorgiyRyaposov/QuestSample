@@ -1,9 +1,15 @@
-﻿using Code.Scripts.Persistence;
+﻿using Code.Scripts.Components;
+using Code.Scripts.GameplayStates;
+using Code.Scripts.Persistence;
+using UnityEngine;
 
 namespace Code.Scripts.App.Common
 {
     public static class Mediator
     {
+        public static GameplayStateMachine GameplayStateMachine;
+        public static PlayerCharacter PlayerCharacter;
+
         /// <summary>
         /// Do not cache, lazy ass edition
         /// </summary>

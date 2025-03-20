@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using Code.Scripts.App.ScenesManagement;
+﻿using Code.Scripts.App.ScenesManagement;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -17,7 +17,7 @@ namespace Code.Scripts.App.AppState
         private AsyncOperationHandle<SceneInstance> _loadGuiSceneHandle;
         private AsyncOperationHandle<SceneInstance> _loadGameplaySceneHandle;
 
-        public override async Task Enter()
+        public override async UniTask Enter()
         {
             Preloader.Show(true);
             
@@ -34,7 +34,7 @@ namespace Code.Scripts.App.AppState
             }
         }
         
-        private async Task LoadGameplay()
+        private async UniTask LoadGameplay()
         {
             _loadGameplaySceneHandle = Addressables.LoadSceneAsync(_gameplaySceneReference, LoadSceneMode.Single);
             await _loadGameplaySceneHandle.Task;
@@ -46,7 +46,7 @@ namespace Code.Scripts.App.AppState
             await op;
         }
         
-        private async Task LoadGameplayGUI()
+        private async UniTask LoadGameplayGUI()
         {
             _loadGuiSceneHandle = Addressables.LoadSceneAsync(_gameplayUISceneReference, LoadSceneMode.Additive);
             await _loadGuiSceneHandle.Task;

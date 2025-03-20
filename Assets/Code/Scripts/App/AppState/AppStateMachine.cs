@@ -1,6 +1,5 @@
-using System.Threading.Tasks;
-using Code.Scripts.App.Common.StateMachines;
 using Code.Scripts.Services.Common;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Code.Scripts.App.AppState
@@ -14,30 +13,30 @@ namespace Code.Scripts.App.AppState
         
         private IAppState _activeState;
 
-        public async Task SetupFromMainMenu()
+        public async UniTask SetupFromMainMenu()
         {
             await Setup(_mainMenuState);
         }
         
-        public async Task SetupFromGameplay()
+        public async UniTask SetupFromGameplay()
         {
             await Setup(_prepareGameState);
             await Enter(_gameplayState);
         }
         
-        public async Task LoadGameplay()
+        public async UniTask LoadGameplay()
         {
             await Enter(_prepareGameState);
             await Enter(_gameplayState);
         }
         
-        private async Task Setup(IAppState state)
+        private async UniTask Setup(IAppState state)
         {
             _activeState = state;
             await _activeState.Enter();
         }
 
-        private async Task Enter(IAppState state)
+        private async UniTask Enter(IAppState state)
         {
             if (_activeState == state)
             {

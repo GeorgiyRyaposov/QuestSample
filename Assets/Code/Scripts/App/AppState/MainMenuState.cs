@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using Code.Scripts.App.ScenesManagement;
+﻿using Code.Scripts.App.ScenesManagement;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -15,7 +15,7 @@ namespace Code.Scripts.App.AppState
         
         private AsyncOperationHandle<SceneInstance> _operationHandle;
 
-        public override async Task Enter()
+        public override async UniTask Enter()
         {
             Preloader.Show(true);
             

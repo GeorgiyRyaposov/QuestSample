@@ -1,9 +1,9 @@
-﻿using Code.Scripts.App.Common;
+﻿using System;
+using Code.Scripts.App.Common;
 using Code.Scripts.Configs;
 using Code.Scripts.Persistence;
 using Code.Scripts.Services;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Code.Scripts.Components
 {
@@ -82,6 +82,8 @@ namespace Code.Scripts.Components
             {
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera").transform;
             }
+            
+            Mediator.PlayerCharacter = this;
         }
 
         private void Start()
@@ -93,6 +95,11 @@ namespace Code.Scripts.Components
             _cfg = Mediator.Get<AssetsService>().playerCharacterConfig;
             
             AssignAnimationIDs();
+        }
+
+        private void OnDestroy()
+        {
+            Mediator.PlayerCharacter = null;
         }
 
         private void Update()
