@@ -9,6 +9,7 @@ namespace Code.Scripts.App.Common
     {
         public static GameplayStateMachine GameplayStateMachine;
         public static PlayerCharacter PlayerCharacter;
+        public static CharacterCinemachineWrapper PlayerCineMachine;
 
         /// <summary>
         /// Do not cache, lazy ass edition

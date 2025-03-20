@@ -4,6 +4,8 @@ using Code.Scripts.Configs;
 using Code.Scripts.Persistence;
 using Code.Scripts.Services;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
+using DG.Tweening.Core.Easing;
 using UnityEngine;
 
 namespace Code.Scripts.Components
@@ -74,7 +76,7 @@ namespace Code.Scripts.Components
         private InputSettings _inputSettings;
         private Transform _mainCamera;
 
-        private const float _threshold = 0.01f;
+        private const float _inputThreshold = 0.01f;
 
         private void Awake()
         {
@@ -137,7 +139,7 @@ namespace Code.Scripts.Components
         private void CameraRotation()
         {
             // if there is an input and camera position is not fixed
-            if (_input.Look.sqrMagnitude >= _threshold && !_lockCameraPosition)
+            if (_input.Look.sqrMagnitude >= _inputThreshold && !_lockCameraPosition)
             {
                 //Don't multiply mouse input by Time.deltaTime;
                 var deltaTimeMultiplier = _input.IsCurrentDeviceMouse ? _inputSettings.MouseSensitivity : Time.deltaTime;
@@ -266,26 +268,41 @@ namespace Code.Scripts.Components
         
         public async UniTask PlayPickUpAnimation(InteractionItem sceneItem)
         {
-            await FaceToTarget(sceneItem.transform);
+            LockCamera(true);
+            
+            var sceneItemTr = sceneItem.transform;
+            await FaceToTarget(sceneItemTr);
 
-            // for (var t = 0f; t < 1f; t += Time.deltaTime * 2f)
-            // {
-            //     
-            // }
+            var duration = 0.5f;
+            var targetPos = transform.position + Vector3.up;
+            
+            var sequence = DOTween.Sequence();
+            sequence.Join(sceneItemTr.DOMove(targetPos, duration).SetEase(Ease.InOutSine));
+            sequence.Join(sceneItemTr.DOScale(Vector3.zero, duration).SetEase(Ease.InQuint));
+            sequence.Play();
+
+            await UniTask.WaitForSeconds(duration);
+            LockCamera(false);
         }
 
         private async UniTask FaceToTarget(Transform target)
         {
-            var rotateFrom = transform.rotation;
             var faceTo = target.position - transform.position;
             var rotateToEuler = Quaternion.LookRotation(faceTo.normalized, Vector3.up).eulerAngles;
             var rotateTo = Quaternion.Euler(0, rotateToEuler.y, 0);
             
-            for (var t = 0f; t < 1f; t += Time.deltaTime * 2f)
-            {
-                transform.rotation = Quaternion.Slerp(rotateFrom, rotateTo, t);
-                await UniTask.WaitForEndOfFrame();
-            }
+            var duration = 0.5f;
+            
+            transform.DORotateQuaternion(rotateTo, duration)
+                .SetEase(Ease.InOutSine);
+            
+            await UniTask.WaitForSeconds(duration);
+        }
+
+        private void LockCamera(bool lockCamera)
+        {
+            _lockCameraPosition = lockCamera;
+            Mediator.PlayerCineMachine.LockCamera(lockCamera);
         }
 
         private void OnFootstep(AnimationEvent animationEvent)

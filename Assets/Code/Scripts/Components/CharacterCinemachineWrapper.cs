@@ -19,11 +19,18 @@ namespace Code.Scripts.Components
 
         private void Start()
         {
+            Mediator.PlayerCineMachine = this;
+            
             _input = Mediator.InputState;
             
             _followComponent = _virtualCamera.GetCinemachineComponent<Cinemachine3rdPersonFollow>();
 
             _targetZoom = _followComponent.CameraDistance;
+        }
+
+        private void OnDestroy()
+        {
+            Mediator.PlayerCineMachine = null;
         }
 
         private void LateUpdate()
@@ -35,6 +42,11 @@ namespace Code.Scripts.Components
         {
             _targetZoom = Mathf.Clamp(_targetZoom + _input.Zoom, _minDistance, _maxDistance);
             _followComponent.CameraDistance = Mathf.Lerp(_followComponent.CameraDistance, _targetZoom, Time.deltaTime * _zoomSpeed);
+        }
+
+        public void LockCamera(bool lockCamera)
+        {
+            _virtualCamera.enabled = !lockCamera;
         }
     }
 }
