@@ -1,7 +1,7 @@
 ﻿using Code.Scripts.Components;
 using Code.Scripts.GameplayStates;
 using Code.Scripts.Persistence;
-using UnityEngine;
+using Code.Scripts.Views.GameplayViews;
 
 namespace Code.Scripts.App.Common
 {
@@ -11,6 +11,8 @@ namespace Code.Scripts.App.Common
         public static PlayerCharacter PlayerCharacter;
         public static CharacterCinemachineWrapper PlayerCineMachine;
 
+        public static HintsView HintsView;
+        
         /// <summary>
         /// Do not cache, lazy ass edition
         /// </summary>

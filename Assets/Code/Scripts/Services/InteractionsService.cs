@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Code.Scripts.App.Common;
 using Code.Scripts.Components;
 using Code.Scripts.Configs.InteractionItems;
 using Code.Scripts.Services.Common;
@@ -31,6 +32,11 @@ namespace Code.Scripts.Services
             if (_activeItem != null)
             {
                 _activeItem.Highlight(true);
+                Mediator.HintsView.Show("Press 'F' to interact");
+            }
+            else
+            {
+                Mediator.HintsView.Hide();
             }
         }
 
@@ -56,7 +62,7 @@ namespace Code.Scripts.Services
                 _activeItem = null;
             }
             
-            item.Highlight(false);
+            item.Highlight(false, false);
             _sceneItems.Remove(item);
             Object.Destroy(item.gameObject);
         }

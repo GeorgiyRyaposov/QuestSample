@@ -10,10 +10,9 @@ namespace Code.Scripts.Configs.InteractionItems
         public override async UniTask Interact(InteractionItemInfo itemInfo)
         {
             var sceneItem = InteractionsService.FindSceneItem(itemInfo);
-            await Mediator.PlayerCharacter.PlayPickUpAnimation(sceneItem);
-            
             if (sceneItem != null)
             {
+                await Mediator.PlayerCharacter.PlayPickUpAnimation(sceneItem);
                 InteractionsService.Destroy(sceneItem);
             }
             
