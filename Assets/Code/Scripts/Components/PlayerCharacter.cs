@@ -3,11 +3,15 @@ using Code.Scripts.Configs;
 using Code.Scripts.Persistence;
 using Code.Scripts.Services;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Code.Scripts.Components
 {
     public class PlayerCharacter : MonoBehaviour
     {
+        [SerializeField]
+        private bool _grounded;
+        
         [Tooltip("Useful for rough ground")]
         [SerializeField]
         private float _groundedOffset = -0.14f;
@@ -53,6 +57,7 @@ namespace Code.Scripts.Components
         private float _targetRotation;
         private float _rotationVelocity;
         private float _velocity;
+        private float _fallTimeoutDelta;
 
         // animation IDs
         private int _animIDSpeed;
@@ -92,6 +97,7 @@ namespace Code.Scripts.Components
 
         private void Update()
         {
+            Gravity();
             GroundedCheck();
             Move();
         }
@@ -114,10 +120,10 @@ namespace Code.Scripts.Components
         {
             // set sphere position, with offset
             var spherePosition = new Vector3(transform.position.x, transform.position.y - _groundedOffset, transform.position.z);
-            var grounded = Physics.CheckSphere(spherePosition, _groundedRadius, _groundLayers, QueryTriggerInteraction.Ignore);
+            _grounded = Physics.CheckSphere(spherePosition, _groundedRadius, _groundLayers, QueryTriggerInteraction.Ignore);
 
             // update animator if using character
-            _animator.SetBool(_animIDGrounded, grounded);
+            _animator.SetBool(_animIDGrounded, _grounded);
         }
 
         private void CameraRotation()
@@ -192,9 +198,8 @@ namespace Code.Scripts.Components
             // if there is a move input rotate player when the player is moving
             if (_input.Move != Vector2.zero)
             {
-                _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
-                                  _mainCamera.eulerAngles.y;
-                float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
+                _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + _mainCamera.eulerAngles.y;
+                var rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
                     _cfg.RotationSmoothTime);
 
                 // rotate to face input direction relative to camera position
@@ -211,6 +216,37 @@ namespace Code.Scripts.Components
             // update animator if using character
             _animator.SetFloat(_animIDSpeed, _animationBlend);
             _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
+        }
+        
+        private void Gravity()
+        {
+            if (_grounded)
+            {
+                _fallTimeoutDelta = _cfg.FallTimeout;
+
+                _animator.SetBool(_animIDJump, false);
+                _animator.SetBool(_animIDFreeFall, false);
+
+                // stop our velocity dropping infinitely when grounded
+                if (_velocity < 0.0f)
+                {
+                    _velocity = -2f;
+                }
+            }
+            else
+            {
+                if (_fallTimeoutDelta >= 0.0f)
+                {
+                    _fallTimeoutDelta -= Time.deltaTime;
+                }
+                else
+                {
+                    _animator.SetBool(_animIDFreeFall, true);
+                }
+            }
+
+            // apply gravity over time (multiply by delta time twice to linearly speed up over time)
+            _velocity += _cfg.Gravity * Time.deltaTime;
         }
 
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)

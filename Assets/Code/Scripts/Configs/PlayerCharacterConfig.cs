@@ -5,6 +5,8 @@ namespace Code.Scripts.Configs
     [CreateAssetMenu(menuName = "Data/Configs/PlayerCharacterConfig", fileName = "PlayerCharacterConfig")]
     public class PlayerCharacterConfig : ScriptableObject
     {
+        public float Gravity = -15;
+        
         [Tooltip("Move speed of the character in m/s")]
         public float MoveSpeed = 2.0f;
         
@@ -17,5 +19,8 @@ namespace Code.Scripts.Configs
         
         [Tooltip("Acceleration and deceleration")]
         public float SpeedChangeRate = 10.0f;
+
+        [Tooltip("Delay before play fall animation")]
+        public float FallTimeout = 0.15f;
     }
 }
