@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 
 namespace Code.Scripts.App.AppState
 {
-    [CreateAssetMenu(menuName = "Data/AppState/PrepareGameState", fileName = "PrepareGameState")]
+    //[CreateAssetMenu(menuName = "Data/AppState/PrepareGameState", fileName = "PrepareGameState")]
     public class PrepareGameState : AppState
     {
         [SerializeField] private AssetReference _gameplaySceneReference;
@@ -19,7 +19,7 @@ namespace Code.Scripts.App.AppState
 
         public override async UniTask Enter()
         {
-            Preloader.Show(true);
+            await Preloader.Show(true);
             
             Unload();
 
@@ -56,11 +56,6 @@ namespace Code.Scripts.App.AppState
             var op = guiInstance.ActivateAsync();
             op.allowSceneActivation = true;
             await op;
-            
-            // if (guiInstance.TryGetComponent<GameplayViewsRoot>(out var gameplayViewsRoot))
-            // {
-            //     gameplayViewsRoot.Setup();
-            // }
         }
 
         private void Unload()

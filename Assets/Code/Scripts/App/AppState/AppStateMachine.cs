@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Code.Scripts.App.AppState
 {
-    [CreateAssetMenu(menuName = "Data/AppState/AppStateMachine", fileName = "AppStateMachine")]
+    //[CreateAssetMenu(menuName = "Data/AppState/AppStateMachine", fileName = "AppStateMachine")]
     public class AppStateMachine : ScriptableService
     {
         [SerializeField] private AppState _mainMenuState;

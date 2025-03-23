@@ -7,5 +7,8 @@ namespace Code.Scripts.Persistence
     public class SessionStateData
     {
         public List<string> InventoryItems = new();
+
+        public string PreviousStageId;
+        public string CurrentStageId;
     }
 }

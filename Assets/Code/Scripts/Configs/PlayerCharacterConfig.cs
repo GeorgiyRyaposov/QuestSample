@@ -2,7 +2,7 @@
 
 namespace Code.Scripts.Configs
 {
-    [CreateAssetMenu(menuName = "Data/Configs/PlayerCharacterConfig", fileName = "PlayerCharacterConfig")]
+    //[CreateAssetMenu(menuName = "Data/Configs/PlayerCharacterConfig", fileName = "PlayerCharacterConfig")]
     public class PlayerCharacterConfig : ScriptableObject
     {
         public float Gravity = -15;

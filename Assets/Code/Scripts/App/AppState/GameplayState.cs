@@ -1,12 +1,11 @@
 ﻿using Code.Scripts.App.Common;
-using Code.Scripts.App.ScenesManagement;
 using Code.Scripts.GameplayStates;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Code.Scripts.App.AppState
 {
-    [CreateAssetMenu(menuName = "Data/AppState/GameplayState", fileName = "GameplayState")]
+    //[CreateAssetMenu(menuName = "Data/AppState/GameplayState", fileName = "GameplayState")]
     public class GameplayState : AppState
     {
         public override async UniTask Enter()
@@ -17,8 +16,6 @@ namespace Code.Scripts.App.AppState
                 Mediator.GameplayStateMachine = stateMachineGameObj.GetComponent<GameplayStateMachine>();
                 Mediator.GameplayStateMachine.Setup();
             }
-            
-            Preloader.Hide();
 
             await Mediator.GameplayStateMachine.EnterInitialState();
         }

@@ -95,7 +95,7 @@ namespace Code.Scripts.Components
 
             _input = Mediator.InputState;
             _inputSettings = Mediator.InputSettings;
-            _cfg = Mediator.Get<AssetsService>().playerCharacterConfig;
+            _cfg = Mediator.Get<AssetsService>().PlayerCharacterConfig;
             
             AssignAnimationIDs();
         }

@@ -13,13 +13,20 @@ namespace Code.Scripts.GameplayStates
         public override UniTask Enter()
         {
             SetPlayerCharacterActive(true);
+            if (Mediator.PlayerCharacter)
+            {
+                Mediator.PlayerCharacter.gameObject.SetActive(true);
+            }
             
             return base.Enter();
         }
 
         public override UniTask Exit()
         {
-            SetPlayerCharacterActive(false);
+            if (Mediator.PlayerCharacter)
+            {
+                Mediator.PlayerCharacter.gameObject.SetActive(false);
+            }
             
             return base.Exit();
         }

@@ -9,6 +9,11 @@ namespace Code.Scripts.Configs.InteractionItems
     {
         protected InteractionsService InteractionsService => Mediator.Get<InteractionsService>();
         
+        public virtual string GetHint(InteractionItemInfo itemInfo)
+        {
+            return string.Empty;
+        }
+        
         public virtual UniTask Interact(InteractionItemInfo itemInfo)
         {
             return UniTask.CompletedTask;

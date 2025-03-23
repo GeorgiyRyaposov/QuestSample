@@ -5,7 +5,6 @@ using Code.Scripts.Components;
 using Code.Scripts.Configs.InteractionItems;
 using Code.Scripts.Services.Common;
 using Cysharp.Threading.Tasks;
-using UnityEngine;
 
 namespace Code.Scripts.Services
 {
@@ -13,10 +12,34 @@ namespace Code.Scripts.Services
     {
         private readonly HashSet<InteractionItem> _sceneItems = new();
         private InteractionItem _activeItem;
+
+        public void SetupItemsState(InteractionItem[] items)
+        {
+            ClearRegisteredItems();
+            
+            var inventory = Mediator.SessionState.InventoryItems;
+            foreach (var item in items)
+            {
+                if (inventory.Contains(item.Info.Id))
+                {
+                    item.Dispose();
+                }
+                else
+                {
+                    RegisterSceneItem(item);
+                }
+            }
+        }
         
-        public void RegisterSceneItem(InteractionItem interactionItem)
+        private void RegisterSceneItem(InteractionItem interactionItem)
         {
             _sceneItems.Add(interactionItem);
+        }
+        
+        private void ClearRegisteredItems()
+        {
+            _activeItem = null;
+            _sceneItems.Clear();
         }
         
         public void SetActiveItem(InteractionItem item)
@@ -24,12 +47,12 @@ namespace Code.Scripts.Services
             var prevItem = _activeItem;
             _activeItem = item;
 
-            if (prevItem != null)
+            if (prevItem)
             {
                 prevItem.Highlight(false);
             }
 
-            if (_activeItem != null)
+            if (_activeItem)
             {
                 _activeItem.Highlight(true);
                 Mediator.HintsView.Show("Press 'F' to interact");
@@ -42,7 +65,7 @@ namespace Code.Scripts.Services
 
         public async UniTask Interact()
         {
-            if (_activeItem == null)
+            if (!_activeItem)
             {
                 return;
             }
@@ -62,9 +85,8 @@ namespace Code.Scripts.Services
                 _activeItem = null;
             }
             
-            item.Highlight(false, false);
             _sceneItems.Remove(item);
-            Object.Destroy(item.gameObject);
+            item.Dispose();
         }
     }
 }

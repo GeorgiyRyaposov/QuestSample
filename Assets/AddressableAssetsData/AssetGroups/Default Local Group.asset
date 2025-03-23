@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: 4960112831602764b971bfd38d12e655
   m_SerializeEntries:
+  - m_GUID: 2c82ab8b591f8a44d9e4ce8e4e2873f7
+    m_Address: Assets/Scenes/Stages/TestTransitionStage.unity
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 399b76974c445d1469277d55316b85f6
     m_Address: Assets/Scenes/MainMenu.unity
     m_ReadOnly: 0
@@ -27,6 +32,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 99c9720ab356a0642a771bea13969a05
     m_Address: Assets/Scenes/Gameplay.unity
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d893ccf4f1f4c1e428c8966acbf44c27
+    m_Address: Assets/Scenes/Stages/FirstStage.unity
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

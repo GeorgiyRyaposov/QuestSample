@@ -10,20 +10,14 @@ namespace Code.Scripts.Views
         
         [Space]
         [SerializeField] private float _rotationSpeed = 3;
-        [SerializeField] private float _fadeSpeed = 5f;
 
         private void Update()
         {
-            _preloaderIcon.Rotate(Vector3.forward, _rotationSpeed * Time.deltaTime);
+            _preloaderIcon.Rotate(Vector3.forward, _rotationSpeed * Time.deltaTime * Mathf.Sin(Time.time));
 
-            var from = Preloader.IsVisible ? 0f : 1f;
-            var to = Preloader.IsVisible ? 1f : 0f;
-            var t = Preloader.Immediately 
-                ? 1f 
-                : _fadeSpeed * Time.deltaTime;
-            _rootCanvasGroup.alpha =  Mathf.Lerp(from, to, t);
+            _rootCanvasGroup.alpha =  Preloader.Alpha;
 
-            if (!Preloader.IsVisible && Mathf.Approximately(t, 1f))
+            if (!Preloader.IsVisible)
             {
                 Destroy(gameObject);
             }

@@ -1,7 +1,4 @@
-﻿using System;
-using Code.Scripts.App.Common;
-using Code.Scripts.Configs.InteractionItems;
-using Code.Scripts.Services;
+﻿using Code.Scripts.Configs.InteractionItems;
 using DG.Tweening;
 using UnityEngine;
 
@@ -14,11 +11,6 @@ namespace Code.Scripts.Components
         [SerializeField] private Transform _visualsRoot;
         
         private bool _isHighlighted;
-
-        public void Start()
-        {
-            Mediator.Get<InteractionsService>().RegisterSceneItem(this);
-        }
 
         public void Highlight(bool on, bool animate = true)
         {
@@ -39,6 +31,12 @@ namespace Code.Scripts.Components
                 pos.y = Mathf.Lerp(pos.y, 0.5f + Mathf.Sin(Time.time) * 0.2f, Time.deltaTime * 4f);
                 _visualsRoot.localPosition = pos;
             }
+        }
+
+        public void Dispose()
+        {
+            Highlight(false, false);
+            Destroy(gameObject);
         }
     }
 }

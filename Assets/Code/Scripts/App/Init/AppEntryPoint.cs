@@ -58,6 +58,7 @@ namespace Code.Scripts.App.Init
                 new GameStateService(),
                 new InputService(),
                 new InteractionsService(),
+                new StageService(),
                 
             };
             

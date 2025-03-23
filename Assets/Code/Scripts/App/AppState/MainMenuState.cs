@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 
 namespace Code.Scripts.App.AppState
 {
-    [CreateAssetMenu(menuName = "Data/AppState/MainMenuState", fileName = "MainMenuState")]
+    //[CreateAssetMenu(menuName = "Data/AppState/MainMenuState", fileName = "MainMenuState")]
     public class MainMenuState : AppState
     {
         [SerializeField] private AssetReference _mainMenuSceneReference;
@@ -17,14 +17,14 @@ namespace Code.Scripts.App.AppState
 
         public override async UniTask Enter()
         {
-            Preloader.Show(true);
+            await Preloader.Show(true);
             
             Unload();
             
             _operationHandle = Addressables.LoadSceneAsync(_mainMenuSceneReference, LoadSceneMode.Single);
             await _operationHandle.Task;
             
-            Preloader.Hide();
+            await Preloader.Hide();
         }
 
         private void Unload()

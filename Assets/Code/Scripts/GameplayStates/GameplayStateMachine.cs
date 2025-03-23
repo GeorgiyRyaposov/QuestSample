@@ -1,23 +1,36 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using Code.Scripts.App.Common;
+using Code.Scripts.Configs;
+using Code.Scripts.Services;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Code.Scripts.GameplayStates
 {
     public class GameplayStateMachine : MonoBehaviour
     {
-        private State _activeCharacterState;
-        private State _activeState = new();
         private readonly State _emptyState = new();
+        private readonly State _activeCharacterState = new ActivePlayerCharacterState();
+        private readonly LoadStageState _loadingState = new ();
+        private State _activeState = new();
         
         public void Setup()
         {
             DontDestroyOnLoad(gameObject);
-            
-            _activeCharacterState = new ActivePlayerCharacterState();
         }
 
         public async UniTask EnterInitialState()
         {
+            var stageInfo = Mediator.Get<StageService>().GetCurrentStageOrInitial();
+            _loadingState.SetNextStage(stageInfo);
+            
+            await SetState(_loadingState);
+            await SetState(_activeCharacterState);
+        }
+        
+        public async UniTaskVoid GoToStage(StageInfo stageInfo)
+        {
+            _loadingState.SetNextStage(stageInfo);
+            await SetState(_loadingState);
             await SetState(_activeCharacterState);
         }
 

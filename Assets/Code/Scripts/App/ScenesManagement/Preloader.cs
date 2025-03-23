@@ -1,41 +1,78 @@
-﻿using UnityEngine.SceneManagement;
+﻿using Cysharp.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Code.Scripts.App.ScenesManagement
 {
     public class Preloader
     {
         public static bool IsVisible { get; private set; }
-        public static bool Immediately { get; private set; }
+        public static float Alpha { get; private set; }
         
         private static bool _preloaderLoaded;
         
-        public static void Show(bool immediately = false)
+        public static async UniTask Show(bool immediately = false)
         {
-            LoadPreloader();
+            if (IsVisible)
+            {
+                return;
+            }
+            
+            await LoadPreloader();
             
             IsVisible = true;
-            Immediately = immediately;
+            
+            if (immediately)
+            {
+                Alpha = 1;
+            }            
+            else
+            {
+                await SetAlpha(0, 1);
+            }
+
+            await UniTask.WaitForSeconds(1f);
         }
 
-        public static void Hide(bool immediately = false)
+        public static async UniTask Hide(bool immediately = false)
         {
-            UnloadPreloader();
+            if (!IsVisible)
+            {
+                return;
+            }
+            
+            if (immediately)
+            {
+                Alpha = 0;
+            }
+            else
+            {
+                await UniTask.WaitForSeconds(1f);
+                await SetAlpha(1, 0);
+            }
             
             IsVisible = false;
-            Immediately = immediately;
+            
+            await UnloadPreloader();
         }
 
-        private static void LoadPreloader()
+        private static async UniTask LoadPreloader()
         {
             if (!_preloaderLoaded)
             {
-                SceneManager.LoadScene(ScenesConsts.Preloader, LoadSceneMode.Additive);
+                var op = SceneManager.LoadSceneAsync(ScenesConsts.Preloader, LoadSceneMode.Additive);
+                await op.ToUniTask();
+
+                if (op != null)
+                {
+                    op.allowSceneActivation = true;
+                }
             }
 
             _preloaderLoaded = true;
         }
         
-        private static void UnloadPreloader()
+        private static async UniTask UnloadPreloader()
         {
             if (!_preloaderLoaded)
             {
@@ -50,10 +87,22 @@ namespace Code.Scripts.App.ScenesManagement
                 {
                     if (scene.IsValid())
                     {
-                        SceneManager.UnloadSceneAsync(scene);
+                        var op = SceneManager.UnloadSceneAsync(scene);
+                        await op.ToUniTask();
                     }
                 }
             }
+        }
+
+        private static async UniTask SetAlpha(float from, float to)
+        {
+            for (var t = 0f; t < 1f; t += Time.deltaTime * 4)
+            {
+                Alpha = Mathf.Lerp(from, to, t);
+                await UniTask.WaitForEndOfFrame();
+            }
+
+            Alpha = to;
         }
     }
 }

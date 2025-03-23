@@ -1,6 +1,7 @@
 ﻿using Code.Scripts.Components;
 using Code.Scripts.GameplayStates;
 using Code.Scripts.Persistence;
+using Code.Scripts.Services.Common;
 using Code.Scripts.Views.GameplayViews;
 
 namespace Code.Scripts.App.Common
@@ -32,7 +33,7 @@ namespace Code.Scripts.App.Common
             _serviceLocator = serviceLocator;
         }
 
-        public static T Get<T>()
+        public static T Get<T>() where T : IService
         {
             return _serviceLocator.Get<T>();
         }
