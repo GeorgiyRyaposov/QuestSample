@@ -55,7 +55,9 @@ namespace Code.Scripts.Services
             if (_activeItem)
             {
                 _activeItem.Highlight(true);
-                Mediator.HintsView.Show("Press 'F' to interact");
+                
+                var hint = _activeItem.Info.Action.GetHint(_activeItem.Info);
+                Mediator.HintsView.Show(hint);
             }
             else
             {
