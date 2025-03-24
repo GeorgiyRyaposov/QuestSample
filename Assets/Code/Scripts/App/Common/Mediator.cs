@@ -3,6 +3,7 @@ using Code.Scripts.GameplayStates;
 using Code.Scripts.Persistence;
 using Code.Scripts.Services.Common;
 using Code.Scripts.Views.GameplayViews;
+using UnityEngine;
 
 namespace Code.Scripts.App.Common
 {
@@ -50,6 +51,20 @@ namespace Code.Scripts.App.Common
             SessionState = gameState.SessionState;
             InputState = gameState.InputState;
             InputSettings = gameState.InputSettings;
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ClearValues()
+        {
+            GameplayStateMachine = null;
+            PlayerCharacter = null;
+            PlayerCineMachine = null;
+            HintsView = null;
+            GameState = null;
+            SessionState = null;
+            InputState = null;
+            InputSettings = null;
+            _serviceLocator = null;
         }
     }
 }

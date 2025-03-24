@@ -104,5 +104,11 @@ namespace Code.Scripts.App.ScenesManagement
 
             Alpha = to;
         }
+        
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ClearValues()
+        {
+            _preloaderLoaded = false;
+        }
     }
 }
