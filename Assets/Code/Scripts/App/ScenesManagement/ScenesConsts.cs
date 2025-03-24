@@ -5,7 +5,7 @@ namespace Code.Scripts.App.ScenesManagement
 {
     public class ScenesConsts
     {
-        public const string EmptyScene = "Empty";
+        public const string EmptyScene = "EmptyScene";
         public const string Preloader = "Preloader";
         public const string MainMenu = "MainMenu";
         public const string EntryPoint = "EntryPoint";

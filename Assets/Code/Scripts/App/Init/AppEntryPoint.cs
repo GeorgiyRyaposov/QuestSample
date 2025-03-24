@@ -93,14 +93,14 @@ namespace Code.Scripts.App.Init
         //     
         // }
         
-        private void OnApplicationFocus(bool hasFocus)
-        {
-            SetCursorState(true);
-        }
-
-        private void SetCursorState(bool isLocked)
-        {
-            Cursor.lockState = isLocked ? CursorLockMode.Locked : CursorLockMode.None;
-        }
+        // private void OnApplicationFocus(bool hasFocus)
+        // {
+        //     SetCursorState(true);
+        // }
+        //
+        // private void SetCursorState(bool isLocked)
+        // {
+        //     Cursor.lockState = isLocked ? CursorLockMode.Locked : CursorLockMode.None;
+        // }
     }
 }
