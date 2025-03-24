@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using Code.Scripts.App.Common;
-using Code.Scripts.GameplayStates;
-using Code.Scripts.Services;
+﻿using Code.Scripts.App.Common;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 

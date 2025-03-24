@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78b3fd9154634ebdb8c8a48960b9a16a, type: 3}
+  m_Name: TestFile
+  m_EditorClassIdentifier: 
+  Dialogues:
+  - Guid: b0a45c81-8da9-4774-bb98-fc324abcfda9
+    SpeakerId: 
+    Text: 111
+    NodeName: Dialogue Node
+    NodePosition: {x: 283, y: 210}
+  - Guid: 377717c9-fc01-4bff-a9ec-e32162fb0f0b
+    SpeakerId: 
+    Text: 222
+    NodeName: Dialogue Node
+    NodePosition: {x: 695, y: 200}
+  Options:
+  - BaseDialogueGuid: b0a45c81-8da9-4774-bb98-fc324abcfda9
+    TargetDialogueGuid: 377717c9-fc01-4bff-a9ec-e32162fb0f0b
+    Text: 1-1
+    NodeName: Option
+    NodePosition: {x: 496, y: 181}
+  Comments:
+  - Text: some comment
+    NodePosition: {x: 523, y: 377}
