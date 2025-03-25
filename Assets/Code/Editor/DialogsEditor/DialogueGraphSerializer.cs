@@ -19,12 +19,11 @@ namespace Code.Editor.DialogsEditor
             _graphView = graphView;
         }
 
-        public void SaveGraph(string fileName)
+        public void SaveGraph(string fileName, DialogueContainer container)
         {
-            var container = AssetDatabaseUtils.FindAsset<DialogueContainer>(fileName);
-            if (container == null)
+            var existingContainer = AssetDatabaseUtils.FindAsset<DialogueContainer>(fileName);
+            if (existingContainer == null)
             {
-                container = ScriptableObject.CreateInstance<DialogueContainer>();
                 var path = $"Assets/Configs/Data/Dialogues/{fileName}.asset";
                 AssetDatabaseUtils.CreateAsset(container, path);
             }
@@ -34,18 +33,12 @@ namespace Code.Editor.DialogsEditor
             AssetDatabase.SaveAssets();
         }
 
-        public void LoadDialogues(string fileName)
+        public void LoadDialogues(DialogueContainer container)
         {
-            var container = AssetDatabaseUtils.FindAsset<DialogueContainer>(fileName);
-            if (container == null)
-            {
-                EditorUtility.DisplayDialog("File Not Found", "Target Narrative Data does not exist!", "OK");
-                return;
-            }
-
             _graphView.ResetGraph();
             LoadDialogueNodes(container);
             LoadCommentNodes(container);
+            _graphView.HasChanges = false;
         }
         
         private void UpdateNodesData(DialogueContainer container)
@@ -67,9 +60,9 @@ namespace Code.Editor.DialogsEditor
                 var dialogueFrom = GetOtherNode<DialogueNode>(optionNode.inputContainer, optionNode);
                 var dialogueTo = GetOtherNode<DialogueNode>(optionNode.outputContainer, optionNode);
 
-                if (dialogueFrom == null || dialogueTo == null)
+                if (dialogueFrom == null)
                 {
-                    Debug.LogError($"Dialog option '{optionNode.title}' missing base ({dialogueFrom == null}) or target ({dialogueTo == null}).");
+                    Debug.LogError($"Ответ диалога '{optionNode.title}' не содержит родительского диалога, свяжите ответ с диалогом");
                 }
                 
                 container.Options.Add(new DialogueOptionData

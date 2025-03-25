@@ -12,23 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78b3fd9154634ebdb8c8a48960b9a16a, type: 3}
   m_Name: TestFile
   m_EditorClassIdentifier: 
+  StartDialogueGuid: 
   Dialogues:
   - Guid: b0a45c81-8da9-4774-bb98-fc324abcfda9
-    SpeakerId: 
+    SpeakerId: 12e59a51-eb3f-4f0a-b118-c7d491550246
     Text: 111
-    NodeName: Dialogue Node
     NodePosition: {x: 283, y: 210}
   - Guid: 377717c9-fc01-4bff-a9ec-e32162fb0f0b
-    SpeakerId: 
+    SpeakerId: 12e59a51-eb3f-4f0a-b118-c7d491550246
     Text: 222
-    NodeName: Dialogue Node
-    NodePosition: {x: 695, y: 200}
+    NodePosition: {x: 873, y: 200}
   Options:
   - BaseDialogueGuid: b0a45c81-8da9-4774-bb98-fc324abcfda9
     TargetDialogueGuid: 377717c9-fc01-4bff-a9ec-e32162fb0f0b
     Text: 1-1
-    NodeName: Option
-    NodePosition: {x: 496, y: 181}
+    NodePosition: {x: 585, y: 170}
   Comments:
   - Text: some comment
     NodePosition: {x: 523, y: 377}

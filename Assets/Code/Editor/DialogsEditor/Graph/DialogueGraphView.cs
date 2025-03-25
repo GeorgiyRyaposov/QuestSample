@@ -15,10 +15,8 @@ namespace Code.Editor.DialogsEditor.Graph
     public class DialogueGraphView : GraphView
     {
         public DialogueNode StartNode { get; private set; }
-        public readonly Vector2 DialogueNodeSize = new(300, 100);
-        public readonly Vector2 OptionNodeSize = new(250, 100);
+        public bool HasChanges { get; set; }
         
-
         private readonly CharactersContainer _characterContainer;
         private CharacterInfo[] Characters => _characterContainer.Characters;
         private readonly List<string> _characterNames;
@@ -117,6 +115,9 @@ namespace Code.Editor.DialogsEditor.Graph
             };
 
             AddElement(note);
+            
+            HasChanges = true;
+            
             return note;
         }
 
@@ -139,7 +140,7 @@ namespace Code.Editor.DialogsEditor.Graph
                 SpeakerId = data.SpeakerId,
             };
             node.styleSheets.Add(_nodeStyle);
-
+            
             AddPort("input", node, Direction.Input, Port.Capacity.Multi);
             AddPort("output", node, Direction.Output, Port.Capacity.Multi);
 
@@ -176,6 +177,8 @@ namespace Code.Editor.DialogsEditor.Graph
 
             AddElement(node);
 
+            HasChanges = true;
+            
             return node;
         }
 
@@ -226,6 +229,8 @@ namespace Code.Editor.DialogsEditor.Graph
             node.RefreshPorts();
 
             AddElement(node);
+            
+            HasChanges = true;
 
             return node;
         }
@@ -234,6 +239,7 @@ namespace Code.Editor.DialogsEditor.Graph
         {
             ClearNodes();
             AddStartNode();
+            HasChanges = false;
         }
 
         private void ClearNodes()
