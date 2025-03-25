@@ -1,4 +1,5 @@
 ﻿using Code.Scripts.App.Common;
+using Code.Scripts.Services;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -15,6 +16,8 @@ namespace Code.Scripts.Configs.InteractionItems
         
         public override async UniTask Interact(InteractionItemInfo itemInfo)
         {
+            Mediator.Get<InteractionsService>().SetPlayerCharacterActive(false);
+            
             var sceneItem = InteractionsService.FindSceneItem(itemInfo);
             if (sceneItem)
             {
@@ -23,6 +26,8 @@ namespace Code.Scripts.Configs.InteractionItems
             }
             
             Mediator.SessionState.InventoryItems.Add(itemInfo.Id);
+            
+            Mediator.Get<InteractionsService>().SetPlayerCharacterActive(true);
         }
     }
 }

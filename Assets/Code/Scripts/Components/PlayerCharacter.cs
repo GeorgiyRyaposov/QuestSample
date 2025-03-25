@@ -109,8 +109,18 @@ namespace Code.Scripts.Components
         {
             _velocity = 0;
             _rotationVelocity = 0;
-            _controller.Move(Vector3.zero);
+            if (gameObject.activeSelf)
+            {
+                _controller.Move(Vector3.zero);
+            }
+            LockCamera(!active);
             enabled = active;
+
+            if (!active && _animIDSpeed != 0)
+            {
+                _animator.SetFloat(_animIDSpeed, 0);
+                _animator.SetFloat(_animIDMotionSpeed, 0);
+            }
         }
 
         private void Update()

@@ -11,14 +11,14 @@ namespace Code.Scripts.GameplayStates
         
         public override UniTask Enter()
         {
-            SetPlayerCharacterActive(true);
+            Mediator.Get<InteractionsService>().SetPlayerCharacterActive(true);
             
             return base.Enter();
         }
 
         public override UniTask Exit()
         {
-            SetPlayerCharacterActive(false);
+            Mediator.Get<InteractionsService>().SetPlayerCharacterActive(false);
             return base.Exit();
         }
 
@@ -34,26 +34,7 @@ namespace Code.Scripts.GameplayStates
 
         private async UniTaskVoid Interact()
         {
-            SetPlayerCharacterActive(false);
             await Mediator.Get<InteractionsService>().Interact();
-            SetPlayerCharacterActive(true);
-        }
-
-        private void SetPlayerCharacterActive(bool active)
-        {
-            if (active)
-            {
-                Mediator.Get<InputService>().EnablePlayerInput();
-            }
-            else
-            {
-                Mediator.Get<InputService>().DisablePlayerInput();
-            }
-            
-            if (Mediator.PlayerCharacter)
-            {
-                Mediator.PlayerCharacter.SetActive(active);
-            }
         }
     }
 }

@@ -19,9 +19,22 @@ namespace Code.Scripts.GameplayStates
         {
             await Preloader.Show();
 
+            SetPlayerCharacterActive(false);
+            
             await Mediator.Get<StageService>().LoadNextStage(_stageToLoad);
             
+            SetPlayerCharacterActive(true);
+            
             await Preloader.Hide();
+        }
+        
+        private static void SetPlayerCharacterActive(bool active)
+        {
+            Mediator.Get<InteractionsService>().SetPlayerCharacterActive(active);
+            if (Mediator.PlayerCharacter)
+            {
+                Mediator.PlayerCharacter.gameObject.SetActive(active);
+            }
         }
     }
 }

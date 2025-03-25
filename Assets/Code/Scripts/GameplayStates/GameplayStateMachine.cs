@@ -13,7 +13,6 @@ namespace Code.Scripts.GameplayStates
         private readonly State _activeCharacterState = new ActivePlayerCharacterState();
         private readonly LoadStageState _loadingState = new ();
         private State _activeState = new();
-        private State _prevState;
 
         public void Setup()
         {
@@ -59,10 +58,12 @@ namespace Code.Scripts.GameplayStates
                 return;
             }
             
-            _prevState = _activeState;
+            var prevState = _activeState;
             _activeState = _emptyState;
+
+            //Debug.Log($"Change {prevState.GetType()} -> {state.GetType()}");
             
-            await _prevState.Exit();
+            await prevState.Exit();
             
             await state.Enter();
             _activeState = state;

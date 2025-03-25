@@ -90,5 +90,22 @@ namespace Code.Scripts.Services
             _sceneItems.Remove(item);
             item.Dispose();
         }
+        
+        public void SetPlayerCharacterActive(bool active)
+        {
+            if (active)
+            {
+                Mediator.Get<InputService>().EnablePlayerInput();
+            }
+            else
+            {
+                Mediator.Get<InputService>().DisablePlayerInput();
+            }
+            
+            if (Mediator.PlayerCharacter)
+            {
+                Mediator.PlayerCharacter.SetActive(active);
+            }
+        }
     }
 }
