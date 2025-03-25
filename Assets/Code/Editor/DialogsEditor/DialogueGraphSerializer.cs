@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Code.Editor.DialogsEditor.Graph;
 using Code.Editor.DialogsEditor.Nodes;
 using Code.Editor.Utils;
@@ -11,16 +10,13 @@ using UnityEngine.UIElements;
 
 namespace Code.Editor.DialogsEditor
 {
-    public class GraphSaveUtility
+    public class DialogueGraphSerializer
     {
-        private StoryGraphView _graphView;
+        private readonly DialogueGraphView _graphView;
 
-        public static GraphSaveUtility GetInstance(StoryGraphView graphView)
+        public DialogueGraphSerializer(DialogueGraphView graphView)
         {
-            return new GraphSaveUtility
-            {
-                _graphView = graphView
-            };
+            _graphView = graphView;
         }
 
         public void SaveGraph(string fileName)
@@ -30,7 +26,6 @@ namespace Code.Editor.DialogsEditor
             {
                 container = ScriptableObject.CreateInstance<DialogueContainer>();
                 var path = $"Assets/Configs/Data/Dialogues/{fileName}.asset";
-                //AssetDatabaseUtils.EnsurePath(path);
                 AssetDatabaseUtils.CreateAsset(container, path);
             }
 
@@ -48,13 +43,19 @@ namespace Code.Editor.DialogsEditor
                 return;
             }
 
-            _graphView.ClearGraph();
+            _graphView.ResetGraph();
             LoadDialogueNodes(container);
             LoadCommentNodes(container);
         }
         
         private void UpdateNodesData(DialogueContainer container)
         {
+            var firstNode = GetOtherNode<DialogueNode>(_graphView.StartNode.outputContainer, _graphView.StartNode);
+            if (firstNode != null)
+            {
+                container.StartDialogueGuid = firstNode.Guid;
+            }
+            
             container.Options.Clear();
             foreach (var node in _graphView.nodes)
             {
@@ -76,7 +77,6 @@ namespace Code.Editor.DialogsEditor
                     BaseDialogueGuid = dialogueFrom?.Guid,
                     TargetDialogueGuid = dialogueTo?.Guid,
                     Text = optionNode.Text,
-                    NodeName = optionNode.title,
                     NodePosition = node.GetPosition().position
                 });
             }
@@ -95,7 +95,6 @@ namespace Code.Editor.DialogsEditor
                     SpeakerId = dialogueNode.SpeakerId,
                     Text = dialogueNode.Text,
                     NodePosition = node.GetPosition().position,
-                    NodeName = dialogueNode.title,
                 });
             }
 
@@ -115,16 +114,16 @@ namespace Code.Editor.DialogsEditor
             EditorUtility.SetDirty(container);
         }
 
-        private T GetOtherNode<T>(VisualElement element, DialogueOptionNode optionNode) where T : DialogueNode
+        private T GetOtherNode<T>(VisualElement element, Node ignoredNode) where T : DialogueNode
         {
             foreach (var connection in element[0].Q<Port>().connections)
             {
-                if (connection.input.node != optionNode && connection.input.node is T input)
+                if (connection.input.node != ignoredNode && connection.input.node is T input)
                 {
                     return input;
                 }
                 
-                if (connection.output.node != optionNode && connection.output.node is T output)
+                if (connection.output.node != ignoredNode && connection.output.node is T output)
                 {
                     return output;
                 }

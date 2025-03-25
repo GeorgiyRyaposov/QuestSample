@@ -9,7 +9,6 @@ namespace Code.Scripts.Configs.Dialogs
         public string BaseDialogueGuid;
         public string TargetDialogueGuid;
         public string Text;
-        public string NodeName;
         public Vector2 NodePosition;
     }
 }

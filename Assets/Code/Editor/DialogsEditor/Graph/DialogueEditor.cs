@@ -1,29 +1,28 @@
 ﻿using Code.Scripts.Configs.Dialogs;
 using UnityEditor;
-using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Code.Editor.DialogsEditor.Graph
 {
-    public class StoryGraph : EditorWindow
+    public class DialogueEditor : EditorWindow
     {
         private string _fileName = "New Narrative";
 
-        private StoryGraphView _graphView;
+        private DialogueGraphView _graphView;
         private DialogueContainer _dialogueContainer;
 
-        [MenuItem("CustomTools/DialogsEditor")]
+        [MenuItem("Tools/DialogueEditor")]
         public static void CreateGraphViewWindow()
         {
-            var window = GetWindow<StoryGraph>();
+            var window = GetWindow<DialogueEditor>();
             window.titleContent = new GUIContent("Narrative Graph");
         }
 
         private void ConstructGraphView()
         {
-            _graphView = new StoryGraphView(this)
+            _graphView = new DialogueGraphView(this)
             {
                 name = "Narrative Graph",
             };
@@ -41,25 +40,31 @@ namespace Code.Editor.DialogsEditor.Graph
             fileNameTextField.RegisterValueChangedCallback(evt => _fileName = evt.newValue);
             toolbar.Add(fileNameTextField);
 
-            toolbar.Add(new Button(() => RequestDataOperation(true)) { text = "Save Data" });
-
-            toolbar.Add(new Button(() => RequestDataOperation(false)) { text = "Load Data" });
+            toolbar.Add(new Button(Save) { text = "Save Data" });
+            toolbar.Add(new Button(Load) { text = "Load Data" });
+            
             rootVisualElement.Add(toolbar);
         }
 
-        private void RequestDataOperation(bool save)
+        private void Save()
         {
             if (!string.IsNullOrEmpty(_fileName))
             {
-                var saveUtility = GraphSaveUtility.GetInstance(_graphView);
-                if (save)
-                {
-                    saveUtility.SaveGraph(_fileName);
-                }
-                else
-                {
-                    saveUtility.LoadDialogues(_fileName);
-                }
+                var serializer = new DialogueGraphSerializer(_graphView);
+                serializer.SaveGraph(_fileName);
+            }
+            else
+            {
+                EditorUtility.DisplayDialog("Invalid File name", "Please Enter a valid filename", "OK");
+            }
+        }
+        
+        private void Load()
+        {
+            if (!string.IsNullOrEmpty(_fileName))
+            {
+                var serializer = new DialogueGraphSerializer(_graphView);
+                serializer.LoadDialogues(_fileName);
             }
             else
             {
@@ -71,15 +76,6 @@ namespace Code.Editor.DialogsEditor.Graph
         {
             ConstructGraphView();
             GenerateToolbar();
-            GenerateMiniMap();
-        }
-
-        private void GenerateMiniMap()
-        {
-            var miniMap = new MiniMap { anchored = true };
-            var cords = _graphView.contentViewContainer.WorldToLocal(new Vector2(maxSize.x - 10, 30));
-            miniMap.SetPosition(new Rect(cords.x, cords.y, 200, 140));
-            _graphView.Add(miniMap);
         }
 
         private void OnDisable()

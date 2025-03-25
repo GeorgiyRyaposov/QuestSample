@@ -1,0 +1,25 @@
+DialogueNode #title {
+    background-color: rgba(29, 115, 57, 0.91);
+    height: 20px;
+    -unity-font-style: bold;
+}
+
+DialogueNode {
+    background-color: rgba(29, 29, 29, 1);
+    width: 250px;
+}
+
+DialogueOptionNode #title {
+    background-color: rgba(57, 29, 115, 0.91);
+    height: 20px;
+    -unity-font-style: bold;
+}
+
+DialogueOptionNode {
+    background-color: rgba(29, 29, 29, 1);
+    width: 250px;
+}
+
+TextField {
+    -unity-font-style: bold;
+}

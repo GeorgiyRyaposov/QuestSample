@@ -1,4 +1,5 @@
-﻿using Code.Scripts.Utils;
+﻿using System;
+using Code.Scripts.Utils;
 using UnityEngine;
 
 namespace Code.Scripts.Configs.InteractionItems
@@ -17,7 +18,7 @@ namespace Code.Scripts.Configs.InteractionItems
         #if UNITY_EDITOR
         private void OnValidate()
         {
-            if (string.IsNullOrEmpty(Id))
+            if (string.IsNullOrEmpty(Id) || Id == Guid.Empty.ToString())
             {
                 if (UnityEditor.AssetDatabase.TryGetGUIDAndLocalFileIdentifier(this,
                         out var guid,

@@ -1,22 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Code.Editor.DialogsEditor.Nodes;
+using Code.Editor.Utils;
 using Code.Scripts.Configs.Dialogs;
+using Code.Scripts.Configs.InteractionItems;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
+using CharacterInfo = Code.Scripts.Configs.InteractionItems.CharacterInfo;
 
 namespace Code.Editor.DialogsEditor.Graph
 {
-    public class StoryGraphView : GraphView
+    public class DialogueGraphView : GraphView
     {
-        public readonly Vector2 DefaultNodeSize = new(200, 150);
+        public DialogueNode StartNode { get; private set; }
+        public readonly Vector2 DialogueNodeSize = new(300, 100);
+        public readonly Vector2 OptionNodeSize = new(250, 100);
+        
+
+        private readonly CharactersContainer _characterContainer;
+        private CharacterInfo[] Characters => _characterContainer.Characters;
+        private readonly List<string> _characterNames;
         
         private NodeSearchWindow _searchWindow;
+        private int _lastSelectedCharacterIndex;
+        private readonly StyleSheet _nodeStyle;
 
-        public StoryGraphView(StoryGraph editorWindow)
+
+        public DialogueGraphView(DialogueEditor editorWindow)
         {
-            styleSheets.Add(Resources.Load<StyleSheet>("NarrativeGraph"));
+            styleSheets.Add(AssetDatabaseUtils.FindAsset<StyleSheet>("DialogueEditorStyleSheet"));
             SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
 
             this.AddManipulator(new ContentDragger());
@@ -26,8 +40,14 @@ namespace Code.Editor.DialogsEditor.Graph
 
             AddBackground();
             AddStartNode();
+            AddMiniMap();
 
             AddSearchWindow(editorWindow);
+
+            _characterContainer = AssetDatabaseUtils.FindAsset<CharactersContainer>();
+            _characterNames = _characterContainer.Characters.Select(x => x.CharacterName).ToList();
+
+            _nodeStyle = AssetDatabaseUtils.FindAsset<StyleSheet>("NodeStyleSheet");
         }
 
         private void AddBackground()
@@ -37,8 +57,15 @@ namespace Code.Editor.DialogsEditor.Graph
             grid.StretchToParentSize();
         }
 
+        private void AddMiniMap()
+        {
+            var miniMap = new MiniMap();
+            miniMap.SetPosition(new Rect(10, 30, 150, 150));
+            Add(miniMap);
+        }
 
-        private void AddSearchWindow(StoryGraph editorWindow)
+
+        private void AddSearchWindow(DialogueEditor editorWindow)
         {
             _searchWindow = ScriptableObject.CreateInstance<NodeSearchWindow>();
             _searchWindow.Configure(editorWindow, this);
@@ -52,7 +79,7 @@ namespace Code.Editor.DialogsEditor.Graph
 
             //DialogueOptionNode can be connected only to DialogueNode
             var onlyDialogNodes = startPort.node is DialogueOptionNode;
-            
+
             foreach (var port in ports)
             {
                 if (startPort == port || startPort.node == port.node)
@@ -64,13 +91,13 @@ namespace Code.Editor.DialogsEditor.Graph
                 {
                     continue;
                 }
-                
+
                 compatiblePorts.Add(port);
             }
 
             return compatiblePorts;
         }
-        
+
         public StickyNote CreateComment(Vector2 position)
         {
             var commentNodeData = new CommentData
@@ -78,26 +105,26 @@ namespace Code.Editor.DialogsEditor.Graph
                 NodePosition = position,
                 Text = string.Empty,
             };
-            
+
             return CreateComment(commentNodeData);
         }
+
         public StickyNote CreateComment(CommentData commentData)
         {
             var note = new StickyNote(commentData.NodePosition)
             {
                 contents = commentData.Text,
             };
-            
+
             AddElement(note);
             return note;
         }
 
-        public void AddDialogueNode(string nodeName, Vector2 position)
+        public void AddDialogueNode(Vector2 position)
         {
             AddDialogueNode(new DialogueData
             {
                 Guid = Guid.NewGuid().ToString(),
-                NodeName = nodeName,
                 NodePosition = position,
             });
         }
@@ -107,77 +134,121 @@ namespace Code.Editor.DialogsEditor.Graph
             var node = new DialogueNode
             {
                 Guid = data.Guid,
-                title = data.NodeName,
+                title = string.IsNullOrEmpty(data.Text) ? "Dialogue" : data.Text,
                 Text = data.Text,
                 SpeakerId = data.SpeakerId,
             };
-            node.styleSheets.Add(Resources.Load<StyleSheet>("Node"));
-            
+            node.styleSheets.Add(_nodeStyle);
+
             AddPort("input", node, Direction.Input, Port.Capacity.Multi);
             AddPort("output", node, Direction.Output, Port.Capacity.Multi);
-            
-            node.SetPosition(new Rect(data.NodePosition, DefaultNodeSize)); 
 
+            node.SetPosition(new Rect(data.NodePosition, node.contentRect.size));
+            
+            //add character selection drop down
+            var charactersSelector = new DropdownField(_characterNames, _lastSelectedCharacterIndex, selectedName =>
+            {
+                var index = GetCharacterIndex(selectedName);
+                if (index == -1)
+                {
+                    return selectedName;
+                }
+                
+                _lastSelectedCharacterIndex = index;
+                
+                node.SpeakerId = Characters[index].Id;
+
+                return selectedName;
+            });
+            node.contentContainer.Add(charactersSelector);
+
+            //add text field
             var textField = new TextField("");
             textField.RegisterValueChangedCallback(evt =>
             {
                 node.Text = evt.newValue;
+                node.title = evt.newValue;
             });
             textField.SetValueWithoutNotify(node.Text);
-            node.mainContainer.Add(textField);
-            
-            node.RefreshExpandedState();
+            node.contentContainer.Add(textField);
+
             node.RefreshPorts();
-            
+
             AddElement(node);
-            
+
             return node;
         }
 
-        public void AddOptionNode(string nodeName, Vector2 position)
+        private int GetCharacterIndex(string characterName)
+        {
+            for (int i = 0; i < Characters.Length; i++)
+            {
+                if (string.Equals(characterName, Characters[i].CharacterName, StringComparison.Ordinal))
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        public void AddOptionNode(Vector2 position)
         {
             AddOptionNode(new DialogueOptionData
             {
-                NodeName = nodeName,
                 NodePosition = position,
             });
         }
+
         public DialogueOptionNode AddOptionNode(DialogueOptionData data)
         {
             var node = new DialogueOptionNode
             {
-                title = data.NodeName,
+                title = string.IsNullOrEmpty(data.Text) ? "Option" : data.Text,
                 Text = data.Text,
             };
-            node.styleSheets.Add(Resources.Load<StyleSheet>("Node"));
-            
+            node.styleSheets.Add(_nodeStyle);
+
             AddPort("input", node, Direction.Input, Port.Capacity.Multi);
             AddPort("output", node, Direction.Output, Port.Capacity.Single);
-            
-            node.SetPosition(new Rect(data.NodePosition, DefaultNodeSize)); 
+
+            node.SetPosition(new Rect(data.NodePosition, node.contentRect.size));
 
             var textField = new TextField("");
             textField.RegisterValueChangedCallback(evt =>
             {
                 node.Text = evt.newValue;
+                node.title = evt.newValue;
             });
             textField.SetValueWithoutNotify(node.Text);
-            node.mainContainer.Add(textField);
+            node.contentContainer.Add(textField);
 
-            node.RefreshExpandedState();
             node.RefreshPorts();
-            
+
             AddElement(node);
-            
+
             return node;
         }
 
-        public void ClearGraph()
+        public void ResetGraph()
         {
-            AddBackground();
+            ClearNodes();
             AddStartNode();
         }
-        
+
+        private void ClearNodes()
+        {
+            foreach (var node in nodes.ToList())
+            {
+                RemoveElement(node);
+            }
+
+            foreach (var graphElement in graphElements.ToList())
+            {
+                RemoveElement(graphElement);
+            }
+        }
+
         private DialogueNode AddStartNode()
         {
             var node = new DialogueNode
@@ -188,7 +259,7 @@ namespace Code.Editor.DialogsEditor.Graph
                 IsEntryPoint = true
             };
 
-            AddPort("Next", node, Direction.Output);
+            AddPort("Next", node, Direction.Output, Port.Capacity.Single);
 
             node.capabilities &= ~Capabilities.Movable;
             node.capabilities &= ~Capabilities.Deletable;
@@ -198,14 +269,16 @@ namespace Code.Editor.DialogsEditor.Graph
             node.SetPosition(new Rect(100, 200, 100, 150));
 
             AddElement(node);
-            
+
+            StartNode = node;
+
             return node;
         }
 
-        private Port AddPort(string portName, Node node, Direction nodeDirection, Port.Capacity capacity = Port.Capacity.Single)
+        private Port AddPort(string portName, Node node, Direction nodeDirection, Port.Capacity capacity)
         {
             var port = node.InstantiatePort(Orientation.Horizontal, nodeDirection, capacity, typeof(float));
-            
+
             port.portName = portName;
 
             if (nodeDirection == Direction.Input)
@@ -224,10 +297,12 @@ namespace Code.Editor.DialogsEditor.Graph
         {
             ConnectNodes(output.outputContainer[0].Q<Port>(), input.inputContainer[0].Q<Port>());
         }
+
         public void ConnectNodes(DialogueOptionNode output, DialogueNode input)
         {
             ConnectNodes(output.outputContainer[0].Q<Port>(), input.inputContainer[0].Q<Port>());
         }
+
         private void ConnectNodes(Port outputPort, Port inputPort)
         {
             var edge = new Edge
@@ -237,7 +312,7 @@ namespace Code.Editor.DialogsEditor.Graph
             };
             edge.input.Connect(edge);
             edge.output.Connect(edge);
-            
+
             Add(edge);
         }
     }

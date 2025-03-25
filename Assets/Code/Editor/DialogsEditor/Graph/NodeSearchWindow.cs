@@ -10,11 +10,11 @@ namespace Code.Editor.DialogsEditor.Graph
     public class NodeSearchWindow : ScriptableObject, ISearchWindowProvider
     {
         private EditorWindow _window;
-        private StoryGraphView _graphView;
+        private DialogueGraphView _graphView;
 
         private Texture2D _indentationIcon;
 
-        public void Configure(EditorWindow window, StoryGraphView graphView)
+        public void Configure(EditorWindow window, DialogueGraphView graphView)
         {
             _window = window;
             _graphView = graphView;
@@ -60,11 +60,11 @@ namespace Code.Editor.DialogsEditor.Graph
             switch (searchTreeEntry.userData)
             {
                 case DialogueNode:
-                    _graphView.AddDialogueNode("Dialogue Node", graphMousePosition);
+                    _graphView.AddDialogueNode(graphMousePosition);
                     return true;
                 
                 case DialogueOptionNode:
-                    _graphView.AddOptionNode("Option", graphMousePosition);
+                    _graphView.AddOptionNode(graphMousePosition);
                     return true;
                 
                 case StickyNote:
