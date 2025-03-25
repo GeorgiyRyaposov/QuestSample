@@ -9,10 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ea9a4c232c6457ebcdc3aa34cee9234, type: 3}
-  m_Name: Character - test
+  m_Script: {fileID: 11500000, guid: 4726c65f06014c22a0312de6e80e4e95, type: 3}
+  m_Name: StartDialogue
   m_EditorClassIdentifier: 
-  Id: 12e59a51-eb3f-4f0a-b118-c7d491550246
-  Action: {fileID: 0}
-  Priority: 1
-  CharacterName: Test character

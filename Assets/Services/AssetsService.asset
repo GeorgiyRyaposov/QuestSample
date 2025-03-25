@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerCharacterConfig: {fileID: 11400000, guid: 21a59f8bb3773424da1e23fbbcb5f04c, type: 2}
   StagesContainer: {fileID: 11400000, guid: 2c410ee72d9ccc949aa056a6cef97e24, type: 2}
+  CharactersContainer: {fileID: 11400000, guid: a439982854ea79747b27f665bf283d6a, type: 2}
+  DialogueContainer: {fileID: 0}

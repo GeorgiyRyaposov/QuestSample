@@ -59,7 +59,7 @@ namespace Code.Scripts.App.Init
                 new InputService(),
                 new InteractionsService(),
                 new StageService(),
-                
+                new DialoguesService(),
             };
             
             foreach (var service in services)

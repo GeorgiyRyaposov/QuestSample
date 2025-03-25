@@ -16,7 +16,7 @@ namespace Code.Scripts.Configs.InteractionItems
         public override async UniTask Interact(InteractionItemInfo itemInfo)
         {
             var sceneItem = InteractionsService.FindSceneItem(itemInfo);
-            if (sceneItem != null)
+            if (sceneItem)
             {
                 await Mediator.PlayerCharacter.PlayPickUpAnimation(sceneItem);
                 InteractionsService.Destroy(sceneItem);

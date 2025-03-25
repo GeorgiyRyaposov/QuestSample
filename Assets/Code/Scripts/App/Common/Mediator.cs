@@ -14,6 +14,7 @@ namespace Code.Scripts.App.Common
         public static CharacterCinemachineWrapper PlayerCineMachine;
 
         public static HintsView HintsView;
+        public static DialoguePanelView DialoguePanelView;
         
         /// <summary>
         /// Do not cache, lazy ass edition
@@ -65,6 +66,7 @@ namespace Code.Scripts.App.Common
             InputState = null;
             InputSettings = null;
             _serviceLocator = null;
+            DialoguePanelView = null;
         }
     }
 }

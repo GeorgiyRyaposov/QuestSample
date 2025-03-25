@@ -152,6 +152,11 @@ namespace Code.Editor.DialogsEditor
                     _graphView.ConnectNodes(optionNode, dialogueNodesMap[optionData.TargetDialogueGuid]);
                 }
             }
+            
+            if (!string.IsNullOrEmpty(dialogueContainer.StartDialogueGuid))
+            {
+                _graphView.ConnectNodes(_graphView.StartNode, dialogueNodesMap[dialogueContainer.StartDialogueGuid]);
+            }
         }
 
         private void LoadCommentNodes(DialogueContainer dialogueContainer)

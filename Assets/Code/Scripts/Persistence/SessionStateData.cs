@@ -10,5 +10,6 @@ namespace Code.Scripts.Persistence
 
         public string PreviousStageId;
         public string CurrentStageId;
+        public List<string> CompletedDialogues = new ();
     }
 }

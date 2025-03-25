@@ -299,12 +299,7 @@ namespace Code.Editor.DialogsEditor.Graph
             return port;
         }
 
-        public void ConnectNodes(DialogueNode output, DialogueOptionNode input)
-        {
-            ConnectNodes(output.outputContainer[0].Q<Port>(), input.inputContainer[0].Q<Port>());
-        }
-
-        public void ConnectNodes(DialogueOptionNode output, DialogueNode input)
+        public void ConnectNodes(Node output, Node input)
         {
             ConnectNodes(output.outputContainer[0].Q<Port>(), input.inputContainer[0].Q<Port>());
         }

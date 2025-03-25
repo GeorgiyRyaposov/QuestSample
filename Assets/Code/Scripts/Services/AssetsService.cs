@@ -1,6 +1,7 @@
 ﻿using Code.Scripts.Configs;
+using Code.Scripts.Configs.Dialogs;
+using Code.Scripts.Configs.InteractionItems;
 using Code.Scripts.Services.Common;
-using UnityEngine;
 
 namespace Code.Scripts.Services
 {
@@ -9,5 +10,6 @@ namespace Code.Scripts.Services
     {
         public PlayerCharacterConfig PlayerCharacterConfig;
         public StagesContainer StagesContainer;
+        public CharactersContainer CharactersContainer;
     }
 }

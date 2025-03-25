@@ -8,10 +8,11 @@ namespace Code.Editor.DialogsEditor.Graph
 {
     public class DialogueEditor : EditorWindow
     {
-        private string _fileName = "New Dialogue";
+        private string _fileName = "NewDialogue";
 
         private DialogueGraphView _graphView;
         private DialogueContainer _dialogueContainer;
+        private TextField _fileNameTextField;
 
         [MenuItem("Tools/Dialogue editor")]
         public static void CreateGraphViewWindow()
@@ -36,10 +37,9 @@ namespace Code.Editor.DialogsEditor.Graph
         {
             var toolbar = new Toolbar();
             
-            var fileNameTextField = new TextField("Имя файла выбранного диалога:");
-            fileNameTextField.SetValueWithoutNotify(_fileName);
-            fileNameTextField.RegisterValueChangedCallback(evt => _fileName = evt.newValue);
-            toolbar.Add(fileNameTextField);
+            _fileNameTextField = new TextField("Имя файла диалога:");
+            _fileNameTextField.SetValueWithoutNotify(_fileName);
+            _fileNameTextField.RegisterValueChangedCallback(evt => _fileName = evt.newValue);
 
             _dialogueContainer = CreateInstance<DialogueContainer>();
             var objectField = new ObjectField
@@ -52,7 +52,7 @@ namespace Code.Editor.DialogsEditor.Graph
                 CheckUnsavedChanges();
                 
                 _dialogueContainer = evt.newValue as DialogueContainer;
-                fileNameTextField.value = evt.newValue.name;
+                _fileNameTextField.value = evt.newValue?.name;
 
                 Load();
             });
@@ -60,18 +60,18 @@ namespace Code.Editor.DialogsEditor.Graph
             
             toolbar.Add(new Button(SaveChanges) { text = "Сохранить" });
             
+            toolbar.Add(_fileNameTextField);
+            toolbar.Add(new Button(CreateNew) { text = "Создать новый" });
+            
             rootVisualElement.Add(toolbar);
         }
 
-        private void CheckUnsavedChanges()
+        private void CreateNew()
         {
-            if (HasUnsavedChanges())
-            {
-                if (EditorUtility.DisplayDialog("Есть несохраненные изменения", saveChangesMessage, "Да", "Нет"))
-                {
-                    SaveChanges();
-                }
-            }
+            CheckUnsavedChanges();
+            
+            _dialogueContainer = CreateInstance<DialogueContainer>();
+            _graphView.ResetGraph();
         }
 
         private void Save()
@@ -114,6 +114,18 @@ namespace Code.Editor.DialogsEditor.Graph
         private void Update()
         {
             hasUnsavedChanges = HasUnsavedChanges();
+        }
+        
+        private void CheckUnsavedChanges()
+        {
+            if (!HasUnsavedChanges())
+            {
+                return;
+            }
+            if (EditorUtility.DisplayDialog("Есть несохраненные изменения", saveChangesMessage, "Да", "Нет"))
+            {
+                SaveChanges();
+            }
         }
 
         private bool HasUnsavedChanges()
