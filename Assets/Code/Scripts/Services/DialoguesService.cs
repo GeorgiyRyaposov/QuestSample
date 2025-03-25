@@ -9,17 +9,20 @@ namespace Code.Scripts.Services
 {
     public class DialoguesService : IService
     {
-        public void StartDialogue(DialoguesInfo dialoguesInfo)
+        public async UniTaskVoid StartDialogue(DialoguesInfo dialoguesInfo)
         {
             //TODO: add check which dialogue available to start
             var dialogueInfo = dialoguesInfo.Dialogues.FirstOrDefault();
 
-            Mediator.DialoguePanelView.ShowDialogue(dialogueInfo).Forget();
+            await Mediator.GameplayStateMachine.EnterDialogueState();
+            await Mediator.DialoguePanelView.ShowDialogue(dialogueInfo);
         }
 
         public void OnDialogCompleted(DialogueContainer dialogue)
         {
             Mediator.SessionState.CompletedDialogues.Add(dialogue.StartDialogueGuid);
+            
+            Mediator.GameplayStateMachine.ExitDialogueState().Forget();
         }
     }
 }

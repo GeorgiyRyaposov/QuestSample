@@ -22,7 +22,7 @@ namespace Code.Scripts.Configs.InteractionItems
                 return UniTask.CompletedTask;
             }
             
-            Mediator.Get<DialoguesService>().StartDialogue(dialoguesInfo);
+            Mediator.Get<DialoguesService>().StartDialogue(dialoguesInfo).Forget();
             return UniTask.CompletedTask;
         }
     }

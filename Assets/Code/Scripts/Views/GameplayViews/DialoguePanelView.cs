@@ -13,6 +13,8 @@ namespace Code.Scripts.Views.GameplayViews
 {
     public class DialoguePanelView : MonoBehaviour
     {
+        public bool IsDialogueTyping { get; private set; }
+        
         [SerializeField] private TMP_Text _dialogue;
         [SerializeField] private CanvasGroup _canvasGroup;
         
@@ -26,6 +28,7 @@ namespace Code.Scripts.Views.GameplayViews
         private readonly List<DialogueOptionView> _options = new();
         private readonly Stack<DialogueOptionView> _optionsPool = new();
         private DialogueContainer _activeDialogue;
+        private bool _skipDialogue;
 
         private void Awake()
         {
@@ -46,6 +49,11 @@ namespace Code.Scripts.Views.GameplayViews
             _canvasGroup.interactable = false;
             _canvasGroup.blocksRaycasts = false;
         }
+        
+        public void SkipDialog()
+        {
+            _skipDialogue = true;
+        }
 
         public async UniTask ShowDialogue(DialogueContainer dialogues)
         {
@@ -57,6 +65,9 @@ namespace Code.Scripts.Views.GameplayViews
                 Debug.LogError($"Указан неверный стартовый диалог: {dialogues.name}", dialogues);
                 return;
             }
+            
+            ClearOptions();
+            _dialogue.text = string.Empty;
 
             _canvasGroup.DOFade(1f, _showDuration).SetEase(Ease.Flash);
             await UniTask.WaitForSeconds(_showDuration);
@@ -75,13 +86,23 @@ namespace Code.Scripts.Views.GameplayViews
             var characterName = $"{speaker.CharacterName}:";
             _dialogue.text = $"{characterName} {dialogue.Text}";
             _dialogue.maxVisibleCharacters = characterName.Length;
-            
+
+            IsDialogueTyping = true;
             for (int i = characterName.Length; i < _dialogue.text.Length + 1; i++)
             {
+                if (_skipDialogue)
+                {
+                    _dialogue.maxVisibleCharacters = _dialogue.text.Length + 1;
+                    break;
+                }
+                
                 _dialogue.maxVisibleCharacters++;
                 await UniTask.WaitForSeconds(_textAwait);
             }
+            IsDialogueTyping = false;
 
+            _skipDialogue = false;
+            
             AddOptions(dialogue);
         }
 
@@ -92,6 +113,13 @@ namespace Code.Scripts.Views.GameplayViews
             foreach (var option in options)
             {
                 AddOption(option);
+            }
+
+            if (_options.Count == 0)
+            {
+                var view = GetOption();
+                view.Setup("Завершить диалог", _ => CompleteDialogue());
+                view.gameObject.SetActive(true);
             }
         }
 
@@ -105,6 +133,12 @@ namespace Code.Scripts.Views.GameplayViews
         private void OnSelected(DialogueOptionView view)
         {
             var targetId = view.DialogueOptionData.TargetDialogueGuid;
+            if (string.IsNullOrEmpty(targetId))
+            {
+                CompleteDialogue();
+                return;
+            }
+            
             var nextDialogue = _activeDialogue.Dialogues.FirstOrDefault(x => x.Guid == targetId);
             if (nextDialogue != null)
             {
@@ -112,10 +146,15 @@ namespace Code.Scripts.Views.GameplayViews
             }
             else
             {
-                Mediator.Get<DialoguesService>().OnDialogCompleted(_activeDialogue);
+                CompleteDialogue();
             }
         }
-        
+
+        private void CompleteDialogue()
+        {
+            Mediator.Get<DialoguesService>().OnDialogCompleted(_activeDialogue);
+        }
+
         private CharacterInfo GetSpeaker(string speakerId)
         {
             return Mediator.Get<AssetsService>().CharactersContainer

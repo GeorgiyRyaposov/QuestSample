@@ -27,6 +27,14 @@ namespace Code.Scripts.Views.GameplayViews
             _text.text = dialogueOptionData.Text;
             _callback = onSelected;
         }
+        
+        public void Setup(string text, UnityAction<DialogueOptionView> onSelected)
+        {
+            DialogueOptionData = null;
+            
+            _text.text = text;
+            _callback = onSelected;
+        }
 
         public void SetInteractable(bool interactable)
         {

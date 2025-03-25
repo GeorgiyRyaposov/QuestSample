@@ -104,6 +104,14 @@ namespace Code.Scripts.Components
         {
             Mediator.PlayerCharacter = null;
         }
+        
+        public void SetActive(bool active)
+        {
+            _velocity = 0;
+            _rotationVelocity = 0;
+            _controller.Move(Vector3.zero);
+            enabled = active;
+        }
 
         private void Update()
         {

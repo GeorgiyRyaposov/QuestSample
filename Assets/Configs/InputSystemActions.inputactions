@@ -800,6 +800,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Dialogue",
+            "id": "c044011c-fade-430e-b807-ca95a4f08865",
+            "actions": [
+                {
+                    "name": "DialogueClick",
+                    "type": "Button",
+                    "id": "21c4da5b-5173-4d12-8f3a-ab2b27406a99",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "a8aa5de4-3697-4e15-9fca-543cb23f3906",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "DialogueClick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

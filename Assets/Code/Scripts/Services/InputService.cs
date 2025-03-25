@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 namespace Code.Scripts.Services
 {
-    public class InputService : IService, InputSystemActions.IPlayerActions, IInitializable
+    public class InputService : IService, InputSystemActions.IPlayerActions, InputSystemActions.IDialogueActions, IInitializable
     {
         private InputState State => Mediator.InputState;
         
@@ -16,6 +16,7 @@ namespace Code.Scripts.Services
         {
             _actions = new InputSystemActions();
             _actions.Player.AddCallbacks(this);
+            _actions.Dialogue.AddCallbacks(this);
         }
         
         public void EnablePlayerInput()
@@ -25,6 +26,15 @@ namespace Code.Scripts.Services
         public void DisablePlayerInput()
         {
             _actions.Player.Disable();
+        }
+        
+        public void EnableDialogueInput()
+        {
+            _actions.Dialogue.Enable();
+        }
+        public void DisableDialogueInput()
+        {
+            _actions.Dialogue.Disable();
         }
         
         #region IPlayerActions
@@ -55,6 +65,11 @@ namespace Code.Scripts.Services
         }
         
         #endregion //IPlayerActions
+        
+        public void OnDialogueClick(InputAction.CallbackContext context)
+        {
+            State.DialogueClicked = context.ReadValueAsButton();
+        }
         
         private void MoveInput(Vector2 newMoveDirection)
         {

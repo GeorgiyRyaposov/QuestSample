@@ -9,6 +9,8 @@ namespace Code.Scripts.Persistence
         public float Zoom;
         public bool Sprint;
         public bool Interact;
+        
+        public bool DialogueClicked;
 
         public bool IsCurrentDeviceMouse = true;
     }

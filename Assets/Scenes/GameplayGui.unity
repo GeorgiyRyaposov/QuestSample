@@ -699,7 +699,7 @@ MonoBehaviour:
   _dialogue: {fileID: 1634960206}
   _canvasGroup: {fileID: 1226813952}
   _showDuration: 0.5
-  _textAwait: 0.1
+  _textAwait: 0.05
   _optionsRoot: {fileID: 1891007766}
   _optionPrefab: {fileID: 3219808189821830499, guid: 4685c527d73050d4ab49a7e6605ea51b, type: 3}
 --- !u!225 &1226813952

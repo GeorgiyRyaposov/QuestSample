@@ -9,10 +9,12 @@ namespace Code.Scripts.GameplayStates
     public class GameplayStateMachine : MonoBehaviour
     {
         private readonly State _emptyState = new();
+        private readonly State _dialogueState = new DialogueState();
         private readonly State _activeCharacterState = new ActivePlayerCharacterState();
         private readonly LoadStageState _loadingState = new ();
         private State _activeState = new();
-        
+        private State _prevState;
+
         public void Setup()
         {
             DontDestroyOnLoad(gameObject);
@@ -34,6 +36,16 @@ namespace Code.Scripts.GameplayStates
             await SetState(_activeCharacterState);
         }
 
+        public async UniTask EnterDialogueState()
+        {
+            await SetState(_dialogueState);
+        }
+
+        public async UniTask ExitDialogueState()
+        {
+            await SetState(_activeCharacterState);
+        }
+
         public async UniTask Dispose()
         {
             await _activeState.Exit();
@@ -47,10 +59,10 @@ namespace Code.Scripts.GameplayStates
                 return;
             }
             
-            var prevState = _activeState;
+            _prevState = _activeState;
             _activeState = _emptyState;
             
-            await prevState.Exit();
+            await _prevState.Exit();
             
             await state.Enter();
             _activeState = state;

@@ -2,7 +2,6 @@
 using Code.Scripts.Persistence;
 using Code.Scripts.Services;
 using Cysharp.Threading.Tasks;
-using UnityEngine;
 
 namespace Code.Scripts.GameplayStates
 {
@@ -13,21 +12,13 @@ namespace Code.Scripts.GameplayStates
         public override UniTask Enter()
         {
             SetPlayerCharacterActive(true);
-            if (Mediator.PlayerCharacter)
-            {
-                Mediator.PlayerCharacter.gameObject.SetActive(true);
-            }
             
             return base.Enter();
         }
 
         public override UniTask Exit()
         {
-            if (Mediator.PlayerCharacter)
-            {
-                Mediator.PlayerCharacter.gameObject.SetActive(false);
-            }
-            
+            SetPlayerCharacterActive(false);
             return base.Exit();
         }
 
@@ -59,9 +50,9 @@ namespace Code.Scripts.GameplayStates
                 Mediator.Get<InputService>().DisablePlayerInput();
             }
             
-            if (Mediator.PlayerCharacter != null)
+            if (Mediator.PlayerCharacter)
             {
-                Mediator.PlayerCharacter.enabled = active;
+                Mediator.PlayerCharacter.SetActive(active);
             }
         }
     }
