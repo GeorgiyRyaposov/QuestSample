@@ -115,7 +115,7 @@ namespace Code.Scripts.Views.GameplayViews
                 AddOption(option);
             }
 
-            if (_options.Count == 0)
+            if (_options.Count(x => x.IsInteractable) == 0)
             {
                 var view = GetOption();
                 view.Setup("Завершить диалог", _ => CompleteDialogue());
@@ -136,6 +136,8 @@ namespace Code.Scripts.Views.GameplayViews
 
         private void OnSelected(DialogueOptionView view)
         {
+            Mediator.Get<DialoguesService>().OnOptionSelected(view.DialogueOptionData, _activeDialogue);
+            
             var targetId = view.DialogueOptionData.TargetDialogueGuid;
             if (string.IsNullOrEmpty(targetId))
             {

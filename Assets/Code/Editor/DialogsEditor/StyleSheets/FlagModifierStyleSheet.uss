@@ -1,6 +1,6 @@
 VisualElement {
     flex-direction: row;
-    background-color: rgba(115, 57, 29, 0.91);
+    background-color: rgba(57, 115, 29, 0.91);
 }
 
 TextField {

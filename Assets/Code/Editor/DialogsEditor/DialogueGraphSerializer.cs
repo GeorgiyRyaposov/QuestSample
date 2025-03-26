@@ -34,6 +34,8 @@ namespace Code.Editor.DialogsEditor
             UpdateNodesData(container);
             
             AssetDatabase.SaveAssets();
+
+            _graphView.HasChanges = false;
         }
 
         public void LoadDialogues(DialogueContainer container)
@@ -85,10 +87,23 @@ namespace Code.Editor.DialogsEditor
                     container.OptionsFlagsRequirements.Add(new FlagRequirement
                     {
                         TargetId = optionNode.Guid,
-                        Requirement = new BoolKeyValue
+                        Flag = new BoolKeyValue
                         {
                             Key = optionNode.FlagRequirement.Value.Key,
                             Value = optionNode.FlagRequirement.Value.Value
+                        }
+                    });
+                }
+                
+                if (!string.IsNullOrEmpty(optionNode.FlagModifier.Key))
+                {
+                    container.OptionsFlagsModifiers.Add(new FlagModifier
+                    {
+                        TargetId = optionNode.Guid,
+                        Flag = new BoolKeyValue
+                        {
+                            Key = optionNode.FlagModifier.Key,
+                            Value = optionNode.FlagModifier.Value
                         }
                     });
                 }
@@ -115,7 +130,7 @@ namespace Code.Editor.DialogsEditor
                     container.DialoguesFlagsRequirements.Add(new FlagRequirement
                     {
                         TargetId = dialogueNode.Guid,
-                        Requirement = new BoolKeyValue
+                        Flag = new BoolKeyValue
                         {
                             Key = dialogueNode.FlagRequirement.Value.Key,
                             Value = dialogueNode.FlagRequirement.Value.Value
@@ -175,7 +190,7 @@ namespace Code.Editor.DialogsEditor
 
                 if (requirement != null)
                 {
-                    dialogueNode.FlagRequirement = requirement.Requirement;
+                    dialogueNode.FlagRequirement = requirement.Flag;
                     _graphView.AddFlagRequirement(dialogueNode);
                 }
             }
@@ -196,11 +211,18 @@ namespace Code.Editor.DialogsEditor
                 
                 var requirement = dialogueContainer.OptionsFlagsRequirements.FirstOrDefault(x => 
                     string.Equals(x.TargetId, optionData.Guid, StringComparison.Ordinal));
-
                 if (requirement != null)
                 {
-                    optionNode.FlagRequirement = requirement.Requirement;
+                    optionNode.FlagRequirement = requirement.Flag;
                     _graphView.AddFlagRequirement(optionNode);
+                }
+                
+                var modifier = dialogueContainer.OptionsFlagsModifiers.FirstOrDefault(x => 
+                    string.Equals(x.TargetId, optionData.Guid, StringComparison.Ordinal));
+                if (modifier != null)
+                {
+                    optionNode.FlagModifier = modifier.Flag;
+                    _graphView.AddFlagModifier(optionNode);
                 }
             }
             

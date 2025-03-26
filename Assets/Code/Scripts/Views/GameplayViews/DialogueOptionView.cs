@@ -14,6 +14,7 @@ namespace Code.Scripts.Views.GameplayViews
         private UnityAction<DialogueOptionView> _callback;
 
         public DialogueOptionData DialogueOptionData { get; private set; }
+        public bool IsInteractable => _button.interactable;
         
         public void Start()
         {

@@ -9,5 +9,6 @@ namespace Code.Editor.DialogsEditor.Nodes
         public string Guid;
         public string Text;
         public Nullable<BoolKeyValue> FlagRequirement { get; set; }
+        public BoolKeyValue FlagModifier;
     }
 }

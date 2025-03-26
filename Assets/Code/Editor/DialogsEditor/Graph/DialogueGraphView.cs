@@ -26,6 +26,7 @@ namespace Code.Editor.DialogsEditor.Graph
         private int _lastSelectedCharacterIndex;
         private readonly StyleSheet _nodeStyle;
         private readonly StyleSheet _flagRequirementStyleSheet;
+        private readonly StyleSheet _flagModifierStyleSheet;
 
 
         public DialogueGraphView(DialogueEditor editorWindow)
@@ -49,6 +50,7 @@ namespace Code.Editor.DialogsEditor.Graph
 
             _nodeStyle = AssetDatabaseUtils.FindAsset<StyleSheet>("NodeStyleSheet");
             _flagRequirementStyleSheet = AssetDatabaseUtils.FindAsset<StyleSheet>("FlagRequirementStyleSheet");
+            _flagModifierStyleSheet = AssetDatabaseUtils.FindAsset<StyleSheet>("FlagModifierStyleSheet");
         }
 
         private void AddBackground()
@@ -177,7 +179,7 @@ namespace Code.Editor.DialogsEditor.Graph
             {
                 text = "Добавить требование"
             };
-            node.titleContainer.Add(button);
+            node.mainContainer.Add(button);
 
             //add text field
             var textField = new TextField("");
@@ -245,17 +247,32 @@ namespace Code.Editor.DialogsEditor.Graph
             node.contentContainer.Add(textField);
             
             //add flag requirement
-            var button = new Button(() =>
+            var addRequirementBtn = new Button(() =>
             {
                 if (!node.FlagRequirement.HasValue)
                 {
                     AddFlagRequirement(node);
+                    HasChanges = true;
                 }
             })
             {
                 text = "Добавить требование"
             };
-            node.titleContainer.Add(button);
+            node.contentContainer.Add(addRequirementBtn);
+            
+            //add flag modifier
+            var addRequirementModifierBtn = new Button(() =>
+            {
+                if (string.IsNullOrEmpty(node.FlagModifier.Key))
+                {
+                    AddFlagModifier(node);
+                    HasChanges = true;
+                }
+            })
+            {
+                text = "Изменить требование"
+            };
+            node.contentContainer.Add(addRequirementModifierBtn);
 
             node.RefreshPorts();
 
@@ -317,7 +334,7 @@ namespace Code.Editor.DialogsEditor.Graph
             };
             root.Add(button);
             
-            var textField = new TextField("Ключ");
+            var textField = new TextField("Требует");
             textField.RegisterValueChangedCallback(evt =>
             {
                 node.FlagRequirement = new BoolKeyValue
@@ -330,6 +347,56 @@ namespace Code.Editor.DialogsEditor.Graph
             if (node.FlagRequirement.HasValue)
             {
                 textField.SetValueWithoutNotify(node.FlagRequirement.Value.Key);
+            }
+            root.Add(textField);
+            
+            node.contentContainer.Add(root);
+        }
+        
+        public void AddFlagModifier(DialogueOptionNode node)
+        {
+            var root = new VisualElement();
+            root.styleSheets.Add(_flagModifierStyleSheet);
+            
+            var toggle = new Toggle("");
+            toggle.RegisterValueChangedCallback(evt =>
+            {
+                node.FlagModifier = new BoolKeyValue
+                {
+                    Key = node.FlagModifier.Key,
+                    Value = evt.newValue,
+                };
+            });
+            
+            if (!string.IsNullOrEmpty(node.FlagModifier.Key))
+            {
+                toggle.SetValueWithoutNotify(node.FlagModifier.Value);
+            }
+            root.Add(toggle);
+            
+            var button = new Button(() =>
+            {
+                node.FlagModifier.Key = string.Empty;
+                node.Remove(root);
+            })
+            {
+                text = "X"
+            };
+            root.Add(button);
+            
+            var textField = new TextField("Установить");
+            textField.RegisterValueChangedCallback(evt =>
+            {
+                node.FlagModifier = new BoolKeyValue
+                {
+                    Key = evt.newValue,
+                    Value = node.FlagModifier.Value,
+                };
+            });
+            
+            if (!string.IsNullOrEmpty(node.FlagModifier.Key))
+            {
+                textField.SetValueWithoutNotify(node.FlagModifier.Key);
             }
             root.Add(textField);
             

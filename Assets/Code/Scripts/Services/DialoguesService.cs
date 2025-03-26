@@ -33,8 +33,8 @@ namespace Code.Scripts.Services
 
             foreach (var requirement in requirements)
             {
-                var currentValue = Mediator.SessionState.BoolBlackboard.Get(requirement.Requirement.Key);
-                if (currentValue != requirement.Requirement.Value)
+                var currentValue = Mediator.SessionState.BoolBlackboard.Get(requirement.Flag.Key);
+                if (currentValue != requirement.Flag.Value)
                 {
                     return true;
                 }
@@ -45,14 +45,25 @@ namespace Code.Scripts.Services
 
             foreach (var dialogueRequirement in nextDialogueRequirements)
             {
-                var currentValue = Mediator.SessionState.BoolBlackboard.Get(dialogueRequirement.Requirement.Key);
-                if (currentValue != dialogueRequirement.Requirement.Value)
+                var currentValue = Mediator.SessionState.BoolBlackboard.Get(dialogueRequirement.Flag.Key);
+                if (currentValue != dialogueRequirement.Flag.Value)
                 {
                     return true;
                 }
             }
             
             return false;
+        }
+
+        public void OnOptionSelected(DialogueOptionData optionData, DialogueContainer dialogue)
+        {
+            var flagModifier = dialogue.OptionsFlagsModifiers.FirstOrDefault(x =>
+                string.Equals(x.TargetId, optionData.Guid, StringComparison.Ordinal));
+
+            if (flagModifier != null)
+            {
+                Mediator.SessionState.BoolBlackboard.Set(flagModifier.Flag.Key, flagModifier.Flag.Value);
+            }
         }
     }
 }

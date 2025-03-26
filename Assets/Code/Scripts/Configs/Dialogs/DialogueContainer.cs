@@ -16,6 +16,8 @@ namespace Code.Scripts.Configs.Dialogs
         public List<FlagRequirement> DialoguesFlagsRequirements = new();
         public List<FlagRequirement> OptionsFlagsRequirements = new();
         
+        public List<FlagModifier> OptionsFlagsModifiers = new();
+        
 #if UNITY_EDITOR
         [UnityEditor.CustomEditor(typeof(DialogueContainer))]
         public class DialogueContainerEditor : UnityEditor.Editor
