@@ -128,6 +128,10 @@ namespace Code.Scripts.Views.GameplayViews
             var view = GetOption();
             view.Setup(dialogueOptionData, OnSelected);
             view.gameObject.SetActive(true);
+
+            var hasUncompletedRequirements = Mediator.Get<DialoguesService>()
+                .HasUncompletedRequirements(dialogueOptionData, _activeDialogue);
+            view.SetInteractable(!hasUncompletedRequirements);
         }
 
         private void OnSelected(DialogueOptionView view)

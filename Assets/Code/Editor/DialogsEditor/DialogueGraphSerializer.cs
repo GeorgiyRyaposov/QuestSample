@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Code.Editor.DialogsEditor.Graph;
 using Code.Editor.DialogsEditor.Nodes;
 using Code.Editor.Utils;
+using Code.Scripts.Configs.Blackboards;
 using Code.Scripts.Configs.Dialogs;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
@@ -49,6 +52,9 @@ namespace Code.Editor.DialogsEditor
                 container.StartDialogueGuid = firstNode.Guid;
             }
             
+            container.DialoguesFlagsRequirements.Clear();
+            container.OptionsFlagsRequirements.Clear();
+            
             container.Options.Clear();
             foreach (var node in _graphView.nodes)
             {
@@ -67,11 +73,25 @@ namespace Code.Editor.DialogsEditor
                 
                 container.Options.Add(new DialogueOptionData
                 {
+                    Guid = optionNode.Guid,
                     BaseDialogueGuid = dialogueFrom?.Guid,
                     TargetDialogueGuid = dialogueTo?.Guid,
                     Text = optionNode.Text,
                     NodePosition = node.GetPosition().position
                 });
+
+                if (optionNode.FlagRequirement.HasValue)
+                {
+                    container.OptionsFlagsRequirements.Add(new FlagRequirement
+                    {
+                        TargetId = optionNode.Guid,
+                        Requirement = new BoolKeyValue
+                        {
+                            Key = optionNode.FlagRequirement.Value.Key,
+                            Value = optionNode.FlagRequirement.Value.Value
+                        }
+                    });
+                }
             }
 
             container.Dialogues.Clear();
@@ -89,6 +109,19 @@ namespace Code.Editor.DialogsEditor
                     Text = dialogueNode.Text,
                     NodePosition = node.GetPosition().position,
                 });
+                
+                if (dialogueNode.FlagRequirement.HasValue)
+                {
+                    container.DialoguesFlagsRequirements.Add(new FlagRequirement
+                    {
+                        TargetId = dialogueNode.Guid,
+                        Requirement = new BoolKeyValue
+                        {
+                            Key = dialogueNode.FlagRequirement.Value.Key,
+                            Value = dialogueNode.FlagRequirement.Value.Value
+                        }
+                    });
+                }
             }
 
             container.Comments.Clear();
@@ -103,7 +136,7 @@ namespace Code.Editor.DialogsEditor
                     });
                 }
             }
-            
+
             EditorUtility.SetDirty(container);
         }
 
@@ -136,6 +169,15 @@ namespace Code.Editor.DialogsEditor
             {
                 var dialogueNode = _graphView.AddDialogueNode(dialogueNodeData);
                 dialogueNodesMap[dialogueNodeData.Guid] = dialogueNode;
+
+                var requirement = dialogueContainer.DialoguesFlagsRequirements.FirstOrDefault(x => 
+                    string.Equals(x.TargetId, dialogueNodeData.Guid, StringComparison.Ordinal));
+
+                if (requirement != null)
+                {
+                    dialogueNode.FlagRequirement = requirement.Requirement;
+                    _graphView.AddFlagRequirement(dialogueNode);
+                }
             }
             
             foreach (var optionData in dialogueContainer.Options)
@@ -150,6 +192,15 @@ namespace Code.Editor.DialogsEditor
                 if (!string.IsNullOrEmpty(optionData.TargetDialogueGuid))
                 {
                     _graphView.ConnectNodes(optionNode, dialogueNodesMap[optionData.TargetDialogueGuid]);
+                }
+                
+                var requirement = dialogueContainer.OptionsFlagsRequirements.FirstOrDefault(x => 
+                    string.Equals(x.TargetId, optionData.Guid, StringComparison.Ordinal));
+
+                if (requirement != null)
+                {
+                    optionNode.FlagRequirement = requirement.Requirement;
+                    _graphView.AddFlagRequirement(optionNode);
                 }
             }
             

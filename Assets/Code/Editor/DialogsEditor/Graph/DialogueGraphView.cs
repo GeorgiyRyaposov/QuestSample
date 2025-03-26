@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Code.Editor.DialogsEditor.Nodes;
 using Code.Editor.Utils;
+using Code.Scripts.Configs.Blackboards;
 using Code.Scripts.Configs.Dialogs;
 using Code.Scripts.Configs.InteractionItems;
 using UnityEditor.Experimental.GraphView;
@@ -24,6 +25,7 @@ namespace Code.Editor.DialogsEditor.Graph
         private NodeSearchWindow _searchWindow;
         private int _lastSelectedCharacterIndex;
         private readonly StyleSheet _nodeStyle;
+        private readonly StyleSheet _flagRequirementStyleSheet;
 
 
         public DialogueGraphView(DialogueEditor editorWindow)
@@ -46,6 +48,7 @@ namespace Code.Editor.DialogsEditor.Graph
             _characterNames = _characterContainer.Characters.Select(x => x.CharacterName).ToList();
 
             _nodeStyle = AssetDatabaseUtils.FindAsset<StyleSheet>("NodeStyleSheet");
+            _flagRequirementStyleSheet = AssetDatabaseUtils.FindAsset<StyleSheet>("FlagRequirementStyleSheet");
         }
 
         private void AddBackground()
@@ -162,6 +165,19 @@ namespace Code.Editor.DialogsEditor.Graph
                 return selectedName;
             });
             node.contentContainer.Add(charactersSelector);
+            
+            //add flag requirement
+            var button = new Button(() =>
+            {
+                if (!node.FlagRequirement.HasValue)
+                {
+                    AddFlagRequirement(node);
+                }
+            })
+            {
+                text = "Добавить требование"
+            };
+            node.titleContainer.Add(button);
 
             //add text field
             var textField = new TextField("");
@@ -199,6 +215,7 @@ namespace Code.Editor.DialogsEditor.Graph
         {
             AddOptionNode(new DialogueOptionData
             {
+                Guid = Guid.NewGuid().ToString(),
                 NodePosition = position,
             });
         }
@@ -207,6 +224,7 @@ namespace Code.Editor.DialogsEditor.Graph
         {
             var node = new DialogueOptionNode
             {
+                Guid = data.Guid,
                 title = string.IsNullOrEmpty(data.Text) ? "Option" : data.Text,
                 Text = data.Text,
             };
@@ -225,6 +243,19 @@ namespace Code.Editor.DialogsEditor.Graph
             });
             textField.SetValueWithoutNotify(node.Text);
             node.contentContainer.Add(textField);
+            
+            //add flag requirement
+            var button = new Button(() =>
+            {
+                if (!node.FlagRequirement.HasValue)
+                {
+                    AddFlagRequirement(node);
+                }
+            })
+            {
+                text = "Добавить требование"
+            };
+            node.titleContainer.Add(button);
 
             node.RefreshPorts();
 
@@ -253,6 +284,56 @@ namespace Code.Editor.DialogsEditor.Graph
             {
                 RemoveElement(graphElement);
             }
+        }
+
+        public void AddFlagRequirement<T>(T node) where T : Node, IHasFlagRequirement
+        {
+            var root = new VisualElement();
+            root.styleSheets.Add(_flagRequirementStyleSheet);
+            
+            var toggle = new Toggle("");
+            toggle.RegisterValueChangedCallback(evt =>
+            {
+                node.FlagRequirement = new BoolKeyValue
+                {
+                    Key = node.FlagRequirement?.Key,
+                    Value = evt.newValue,
+                };
+            });
+            
+            if (node.FlagRequirement.HasValue)
+            {
+                toggle.SetValueWithoutNotify(node.FlagRequirement.Value.Value);
+            }
+            root.Add(toggle);
+            
+            var button = new Button(() =>
+            {
+                node.FlagRequirement = null;
+                node.Remove(root);
+            })
+            {
+                text = "X"
+            };
+            root.Add(button);
+            
+            var textField = new TextField("Ключ");
+            textField.RegisterValueChangedCallback(evt =>
+            {
+                node.FlagRequirement = new BoolKeyValue
+                {
+                    Key = evt.newValue,
+                    Value = node.FlagRequirement?.Value ?? false,
+                };
+            });
+            
+            if (node.FlagRequirement.HasValue)
+            {
+                textField.SetValueWithoutNotify(node.FlagRequirement.Value.Key);
+            }
+            root.Add(textField);
+            
+            node.contentContainer.Add(root);
         }
 
         private DialogueNode AddStartNode()

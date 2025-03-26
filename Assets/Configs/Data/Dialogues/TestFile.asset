@@ -44,57 +44,88 @@ MonoBehaviour:
       \u0445\u043E\u0447\u0435\u0442 \u043F\u043E\u043F\u0430\u0441\u0442\u044C \u043D\u0430
       \u0434\u0440\u0443\u0433\u0443\u044E \u0441\u0442\u043E\u0440\u043E\u043D\u0443"
     NodePosition: {x: 224, y: 215}
+  - Guid: ec34d86a-f964-4de2-bbb2-149d5987b1c4
+    SpeakerId: 12e59a51-eb3f-4f0a-b118-c7d491550246
+    Text: Testec
+    NodePosition: {x: 794, y: 471}
   Options:
-  - BaseDialogueGuid: b0a45c81-8da9-4774-bb98-fc324abcfda9
+  - Guid: 0e07b8b6-c832-4af8-89e1-0519883359d2
+    BaseDialogueGuid: b0a45c81-8da9-4774-bb98-fc324abcfda9
     TargetDialogueGuid: 377717c9-fc01-4bff-a9ec-e32162fb0f0b
     Text: "\u0421\u043F\u0440\u0430\u0448\u0438\u0432\u0430\u0439 \u0441\u0442\u0430\u0440\u0438\u043A,
       \u044F \u043D\u0435 \u0431\u043E\u044E\u0441\u044C!"
     NodePosition: {x: 516, y: 215}
-  - BaseDialogueGuid: 377717c9-fc01-4bff-a9ec-e32162fb0f0b
+  - Guid: 10bc0439-7900-46ea-9cf1-9729ae57ebde
+    BaseDialogueGuid: 377717c9-fc01-4bff-a9ec-e32162fb0f0b
     TargetDialogueGuid: 545726d6-b663-43ea-b0bf-8d4e050e1666
     Text: "\u0421\u044D\u0440 \u041B\u0430\u043D\u0446\u0435\u043B\u043E\u0442"
     NodePosition: {x: 1087, y: 196}
-  - BaseDialogueGuid: 377717c9-fc01-4bff-a9ec-e32162fb0f0b
+  - Guid: 924d5042-07f7-4044-af22-dc3e7cdd6adf
+    BaseDialogueGuid: 377717c9-fc01-4bff-a9ec-e32162fb0f0b
     TargetDialogueGuid: 545726d6-b663-43ea-b0bf-8d4e050e1666
     Text: "\u0410\u0440\u0442\u0443\u0440, \u043A\u043E\u0440\u043E\u043B\u044C \u0411\u0440\u0438\u0442\u043E\u0432"
     NodePosition: {x: 1087, y: 389}
-  - BaseDialogueGuid: b0a45c81-8da9-4774-bb98-fc324abcfda9
-    TargetDialogueGuid: 
+  - Guid: 39a5bd39-2d51-4583-99d1-becdaa4b6592
+    BaseDialogueGuid: b0a45c81-8da9-4774-bb98-fc324abcfda9
+    TargetDialogueGuid: ec34d86a-f964-4de2-bbb2-149d5987b1c4
     Text: "\u041D\u0443 \u0443\u0436 \u043D\u0435\u0442"
     NodePosition: {x: 516, y: 335}
-  - BaseDialogueGuid: 377717c9-fc01-4bff-a9ec-e32162fb0f0b
+  - Guid: 9b97e441-a369-4ff8-9f70-0c772bcc10af
+    BaseDialogueGuid: 377717c9-fc01-4bff-a9ec-e32162fb0f0b
     TargetDialogueGuid: 545726d6-b663-43ea-b0bf-8d4e050e1666
     Text: "\u0421\u044D\u0440 \u0420\u043E\u0431\u0438\u043D \u0438\u0437 \u041A\u0430\u043C\u0435\u0442\u043E\u043B\u0430"
     NodePosition: {x: 1087, y: 295}
-  - BaseDialogueGuid: 545726d6-b663-43ea-b0bf-8d4e050e1666
+  - Guid: b1872efc-1e26-422a-afcf-08d68fd01070
+    BaseDialogueGuid: 545726d6-b663-43ea-b0bf-8d4e050e1666
     TargetDialogueGuid: 520f9066-0572-4119-8a2e-4d6050d05c35
     Text: "\u0421\u0432\u044F\u0449\u0435\u043D\u043D\u0443\u044E \u0447\u0430\u0448\u0443
       \u0413\u0440\u0430\u0430\u043B\u044F"
     NodePosition: {x: 1680, y: 196}
-  - BaseDialogueGuid: 545726d6-b663-43ea-b0bf-8d4e050e1666
+  - Guid: 0b7bc915-7aaa-4893-b4be-e55bc87d4d21
+    BaseDialogueGuid: 545726d6-b663-43ea-b0bf-8d4e050e1666
     TargetDialogueGuid: 520f9066-0572-4119-8a2e-4d6050d05c35
     Text: "\u0412\u0447\u0435\u0440\u0430\u0448\u043D\u0438\u0439 \u0434\u0435\u043D\u044C"
     NodePosition: {x: 1680, y: 295}
-  - BaseDialogueGuid: 545726d6-b663-43ea-b0bf-8d4e050e1666
+  - Guid: bf317806-2d8b-413d-b940-aff5d734037e
+    BaseDialogueGuid: 545726d6-b663-43ea-b0bf-8d4e050e1666
     TargetDialogueGuid: 520f9066-0572-4119-8a2e-4d6050d05c35
     Text: "\u041D\u043E\u0441\u043A\u0438"
     NodePosition: {x: 1680, y: 389}
-  - BaseDialogueGuid: 520f9066-0572-4119-8a2e-4d6050d05c35
+  - Guid: 2642e910-22da-4460-8581-3f684c101a92
+    BaseDialogueGuid: 520f9066-0572-4119-8a2e-4d6050d05c35
     TargetDialogueGuid: 75ef1c7f-03cb-4871-8eeb-222d854c536b
     Text: "\u0413\u043E\u043B\u0443\u0431\u043E\u0439!"
     NodePosition: {x: 2293, y: 215}
-  - BaseDialogueGuid: 520f9066-0572-4119-8a2e-4d6050d05c35
+  - Guid: e4f3df3c-242f-4a1a-beb0-79764d9fc490
+    BaseDialogueGuid: 520f9066-0572-4119-8a2e-4d6050d05c35
     TargetDialogueGuid: 75ef1c7f-03cb-4871-8eeb-222d854c536b
     Text: "\u0413\u043E\u043B\u0443\u0431\u043E\u0439, \u043E\u0439 \u043D\u0435\u0442.."
     NodePosition: {x: 2293, y: 309}
-  - BaseDialogueGuid: 75ef1c7f-03cb-4871-8eeb-222d854c536b
+  - Guid: e12babcc-759a-4cf9-82ab-5e45a28e4a3a
+    BaseDialogueGuid: 75ef1c7f-03cb-4871-8eeb-222d854c536b
     TargetDialogueGuid: 80f49895-6281-4310-8289-a1d9078a63e5
     Text: "\u0422\u044B \u0433\u043E\u0432\u043E\u0440\u0438\u0448\u044C \u043E\u0431
       \u0430\u0444\u0440\u0438\u043A\u0430\u043D\u0441\u043A\u043E\u0439 \u0438\u043B\u0438
       \u0435\u0432\u0440\u043E\u043F\u0435\u0439\u0441\u043A\u043E\u0439 \u043B\u0430\u0441\u0442\u043E\u0447\u043A\u0435?"
     NodePosition: {x: 2916, y: 332}
-  - BaseDialogueGuid: 75ef1c7f-03cb-4871-8eeb-222d854c536b
+  - Guid: 7fee9b6a-0440-4478-bbb8-828d7e14a12c
+    BaseDialogueGuid: 75ef1c7f-03cb-4871-8eeb-222d854c536b
     TargetDialogueGuid: 
     Text: "\u041D\u0435 \u0437\u043D\u0430\u044E.."
     NodePosition: {x: 2916, y: 229}
+  - Guid: 7bb741bd-d8a7-43ff-a35a-3792b6234be3
+    BaseDialogueGuid: b0a45c81-8da9-4774-bb98-fc324abcfda9
+    TargetDialogueGuid: ec34d86a-f964-4de2-bbb2-149d5987b1c4
+    Text: "\u041D\u0435 \u0443\u0432\u0435\u0440\u0435\u043D"
+    NodePosition: {x: 504, y: 471}
   Comments: []
+  DialoguesFlagsRequirements:
+  - TargetId: ec34d86a-f964-4de2-bbb2-149d5987b1c4
+    Requirement:
+      Key: aAaaA
+      Value: 1
+  OptionsFlagsRequirements:
+  - TargetId: 924d5042-07f7-4044-af22-dc3e7cdd6adf
+    Requirement:
+      Key: TestKey2
+      Value: 1

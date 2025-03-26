@@ -38,7 +38,10 @@ namespace Code.Scripts.Views.GameplayViews
 
         public void SetInteractable(bool interactable)
         {
-            _button.interactable = interactable;
+            if (_button.interactable != interactable)
+            {
+                _button.interactable = interactable;
+            }
         }
 
         private void OnSelected()

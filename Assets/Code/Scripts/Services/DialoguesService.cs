@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Code.Scripts.App.Common;
 using Code.Scripts.Configs.Dialogs;
 using Code.Scripts.Configs.InteractionItems;
@@ -23,6 +24,35 @@ namespace Code.Scripts.Services
             Mediator.SessionState.CompletedDialogues.Add(dialogue.StartDialogueGuid);
             
             Mediator.GameplayStateMachine.ExitDialogueState().Forget();
+        }
+
+        public bool HasUncompletedRequirements(DialogueOptionData option, DialogueContainer dialogue)
+        {
+            var requirements = dialogue.OptionsFlagsRequirements.Where(x =>
+                string.Equals(x.TargetId, option.Guid, StringComparison.Ordinal));
+
+            foreach (var requirement in requirements)
+            {
+                var currentValue = Mediator.SessionState.BoolBlackboard.Get(requirement.Requirement.Key);
+                if (currentValue != requirement.Requirement.Value)
+                {
+                    return true;
+                }
+            }
+
+            var nextDialogueRequirements = dialogue.DialoguesFlagsRequirements.Where(x =>
+                string.Equals(x.TargetId, option.TargetDialogueGuid, StringComparison.Ordinal));
+
+            foreach (var dialogueRequirement in nextDialogueRequirements)
+            {
+                var currentValue = Mediator.SessionState.BoolBlackboard.Get(dialogueRequirement.Requirement.Key);
+                if (currentValue != dialogueRequirement.Requirement.Value)
+                {
+                    return true;
+                }
+            }
+            
+            return false;
         }
     }
 }

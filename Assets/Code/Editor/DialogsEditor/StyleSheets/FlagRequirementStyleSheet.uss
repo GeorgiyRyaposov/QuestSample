@@ -1,0 +1,8 @@
+VisualElement {
+    flex-direction: row;
+}
+
+TextField {
+    flex-direction: row-reverse;
+    width: 250px;
+}
