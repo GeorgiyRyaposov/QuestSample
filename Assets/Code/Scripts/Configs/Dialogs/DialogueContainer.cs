@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Code.Scripts.Configs.Blackboards;
 using UnityEngine;
 
 namespace Code.Scripts.Configs.Dialogs
@@ -8,6 +9,11 @@ namespace Code.Scripts.Configs.Dialogs
     public class DialogueContainer : ScriptableObject
     {
         public string StartDialogueGuid;
+        
+        [Tooltip("Можно стартовать после завершения указанных диалогов")]
+        public DialogueContainer[] CanBeStartedAfterDialogues = new DialogueContainer[0];
+        [Tooltip("Можно стартовать если активен какой-то флаг")]
+        public BoolKeyValue[] CanBeStartedByFlags = new BoolKeyValue[0];
         
         public List<DialogueData> Dialogues = new();
         public List<DialogueOptionData> Options = new();

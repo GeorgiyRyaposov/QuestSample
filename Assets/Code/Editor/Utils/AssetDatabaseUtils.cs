@@ -12,6 +12,24 @@ namespace Code.Editor.Utils
 {
     public static class AssetDatabaseUtils
     {
+        public static List<Object> FindAssets(Type t)
+        {
+            var guids = AssetDatabase.FindAssets($"t:{t.Name}");
+            var assets = new List<Object>(guids.Length);
+
+            foreach (var guid in guids)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                var asset = AssetDatabase.LoadAssetAtPath(path, t);
+                if (asset)
+                {
+                    assets.Add(asset);
+                }
+            }
+
+            return assets;
+        }
+        
         public static List<T> FindAssets<T>() where T : Object
         {
             var guids = AssetDatabase.FindAssets($"t:{typeof(T).Name}");
