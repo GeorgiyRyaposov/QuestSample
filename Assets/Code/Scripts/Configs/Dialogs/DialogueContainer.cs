@@ -8,12 +8,13 @@ namespace Code.Scripts.Configs.Dialogs
     [Serializable]
     public class DialogueContainer : ScriptableObject
     {
+        public string DialogueName;
         public string StartDialogueGuid;
         
         [Tooltip("Можно стартовать после завершения указанных диалогов")]
-        public DialogueContainer[] CanBeStartedAfterDialogues = new DialogueContainer[0];
+        public List<DialogueContainer> CanBeStartedAfterDialogues = new();
         [Tooltip("Можно стартовать если активен какой-то флаг")]
-        public BoolKeyValue[] CanBeStartedByFlags = new BoolKeyValue[0];
+        public List<BoolKeyValue> CanBeStartedByFlags = new();
         
         public List<DialogueData> Dialogues = new();
         public List<DialogueOptionData> Options = new();

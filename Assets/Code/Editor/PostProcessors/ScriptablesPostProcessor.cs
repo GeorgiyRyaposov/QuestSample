@@ -49,9 +49,9 @@ namespace Code.Editor.PostProcessors
             }
 
             var assembly = Assembly.Load(new AssemblyName("Assembly-CSharp"));
-            var configsContainers = FindDerivedTypes(assembly, typeof(IConfigsContainer));
+            var configsContainersTypes = FindDerivedTypes(assembly, typeof(IConfigsContainer));
             var assetsFinder = new AssetsFinder();
-            foreach (var containerType in configsContainers)
+            foreach (var containerType in configsContainersTypes)
             {
                 var assets = AssetDatabaseUtils.FindAssets(containerType);
                 foreach (var asset in assets)
@@ -74,7 +74,20 @@ namespace Code.Editor.PostProcessors
         {
             public T[] GetAssets<T>() where T : Object
             {
-                return AssetDatabaseUtils.FindAssets<T>().ToArray();
+                var guids = AssetDatabase.FindAssets($"t:{typeof(T).Name}");
+                var assets = new List<T>(guids.Length);
+
+                foreach (var guid in guids)
+                {
+                    var path = AssetDatabase.GUIDToAssetPath(guid);
+                    var asset = AssetDatabase.LoadAssetAtPath(path, typeof(T));
+                    if (asset is T assetT)
+                    {
+                        assets.Add(assetT);
+                    }
+                }
+
+                return assets.ToArray();
             }
         }
     }

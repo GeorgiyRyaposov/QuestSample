@@ -6,7 +6,9 @@ using Code.Editor.Utils;
 using Code.Scripts.Configs.Blackboards;
 using Code.Scripts.Configs.Dialogs;
 using Code.Scripts.Configs.InteractionItems;
+using UnityEditor;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using CharacterInfo = Code.Scripts.Configs.InteractionItems.CharacterInfo;
@@ -17,11 +19,13 @@ namespace Code.Editor.DialogsEditor.Graph
     {
         public DialogueNode StartNode { get; private set; }
         public bool HasChanges { get; set; }
-        
+
+        public Blackboard Blackboard = new();
+
         private readonly CharactersContainer _characterContainer;
         private CharacterInfo[] Characters => _characterContainer.Characters;
         private readonly List<string> _characterNames;
-        
+
         private NodeSearchWindow _searchWindow;
         private int _lastSelectedCharacterIndex;
         private readonly StyleSheet _nodeStyle;
@@ -47,6 +51,9 @@ namespace Code.Editor.DialogsEditor.Graph
 
             _characterContainer = AssetDatabaseUtils.FindAsset<CharactersContainer>();
             _characterNames = _characterContainer.Characters.Select(x => x.CharacterName).ToList();
+
+            Blackboard.SetPosition(new Rect(10, 200, 250, 300));
+            Add(Blackboard);
 
             _nodeStyle = AssetDatabaseUtils.FindAsset<StyleSheet>("NodeStyleSheet");
             _flagRequirementStyleSheet = AssetDatabaseUtils.FindAsset<StyleSheet>("FlagRequirementStyleSheet");
@@ -120,9 +127,9 @@ namespace Code.Editor.DialogsEditor.Graph
             };
 
             AddElement(note);
-            
+
             HasChanges = true;
-            
+
             return note;
         }
 
@@ -145,12 +152,12 @@ namespace Code.Editor.DialogsEditor.Graph
                 SpeakerId = data.SpeakerId,
             };
             node.styleSheets.Add(_nodeStyle);
-            
+
             AddPort("input", node, Direction.Input, Port.Capacity.Multi);
             AddPort("output", node, Direction.Output, Port.Capacity.Multi);
 
             node.SetPosition(new Rect(data.NodePosition, node.contentRect.size));
-            
+
             //add character selection drop down
             var charactersSelector = new DropdownField(_characterNames, _lastSelectedCharacterIndex, selectedName =>
             {
@@ -159,15 +166,15 @@ namespace Code.Editor.DialogsEditor.Graph
                 {
                     return selectedName;
                 }
-                
+
                 _lastSelectedCharacterIndex = index;
-                
+
                 node.SpeakerId = Characters[index].Id;
 
                 return selectedName;
             });
             node.contentContainer.Add(charactersSelector);
-            
+
             //add flag requirement
             var button = new Button(() =>
             {
@@ -196,7 +203,7 @@ namespace Code.Editor.DialogsEditor.Graph
             AddElement(node);
 
             HasChanges = true;
-            
+
             return node;
         }
 
@@ -245,7 +252,7 @@ namespace Code.Editor.DialogsEditor.Graph
             });
             textField.SetValueWithoutNotify(node.Text);
             node.contentContainer.Add(textField);
-            
+
             //add flag requirement
             var addRequirementBtn = new Button(() =>
             {
@@ -259,7 +266,7 @@ namespace Code.Editor.DialogsEditor.Graph
                 text = "Добавить требование"
             };
             node.contentContainer.Add(addRequirementBtn);
-            
+
             //add flag modifier
             var addRequirementModifierBtn = new Button(() =>
             {
@@ -277,14 +284,45 @@ namespace Code.Editor.DialogsEditor.Graph
             node.RefreshPorts();
 
             AddElement(node);
-            
+
             HasChanges = true;
 
             return node;
         }
 
+        public void AddPropertiesToBlackBoard(DialogueContainer dialogueContainer)
+        {
+            var container = new VisualElement();
+
+            var nameTextField = new TextField("Dialogue Name:")
+            {
+                value = dialogueContainer.DialogueName,
+                bindingPath = "DialogueName",
+            };
+            container.Add(nameTextField);
+
+            var afterDialogsTreePrefab = AssetDatabaseUtils.FindAsset<VisualTreeAsset>("AfterDialogsTree");
+            var afterDialogsTree = afterDialogsTreePrefab.CloneTree();
+            afterDialogsTree.Q<ListView>().makeItem = () => new ObjectField
+                    {
+                        objectType = typeof(DialogueContainer),
+                    };
+            container.Add(afterDialogsTree);
+
+            container.Add(new Label("Доступен если флаг в указанном состоянии:"));
+            var flagViewsTreePrefab = AssetDatabaseUtils.FindAsset<VisualTreeAsset>("FlagViewsTree");
+            var flagViewPrefab = AssetDatabaseUtils.FindAsset<VisualTreeAsset>("FlagView");
+            var flagViewsTree = flagViewsTreePrefab.CloneTree();
+            flagViewsTree.Q<ListView>().makeItem = flagViewPrefab.CloneTree;
+            container.Add(flagViewsTree);
+
+            container.Bind(new SerializedObject(dialogueContainer));
+            Blackboard.Add(container);
+        }
+
         public void ResetGraph()
         {
+            Blackboard.Clear();
             ClearNodes();
             AddStartNode();
             HasChanges = false;
@@ -307,7 +345,7 @@ namespace Code.Editor.DialogsEditor.Graph
         {
             var root = new VisualElement();
             root.styleSheets.Add(_flagRequirementStyleSheet);
-            
+
             var toggle = new Toggle("");
             toggle.RegisterValueChangedCallback(evt =>
             {
@@ -317,13 +355,14 @@ namespace Code.Editor.DialogsEditor.Graph
                     Value = evt.newValue,
                 };
             });
-            
+
             if (node.FlagRequirement.HasValue)
             {
                 toggle.SetValueWithoutNotify(node.FlagRequirement.Value.Value);
             }
+
             root.Add(toggle);
-            
+
             var button = new Button(() =>
             {
                 node.FlagRequirement = null;
@@ -333,7 +372,7 @@ namespace Code.Editor.DialogsEditor.Graph
                 text = "X"
             };
             root.Add(button);
-            
+
             var textField = new TextField("Требует");
             textField.RegisterValueChangedCallback(evt =>
             {
@@ -343,21 +382,22 @@ namespace Code.Editor.DialogsEditor.Graph
                     Value = node.FlagRequirement?.Value ?? false,
                 };
             });
-            
+
             if (node.FlagRequirement.HasValue)
             {
                 textField.SetValueWithoutNotify(node.FlagRequirement.Value.Key);
             }
+
             root.Add(textField);
-            
+
             node.contentContainer.Add(root);
         }
-        
+
         public void AddFlagModifier(DialogueOptionNode node)
         {
             var root = new VisualElement();
             root.styleSheets.Add(_flagModifierStyleSheet);
-            
+
             var toggle = new Toggle("");
             toggle.RegisterValueChangedCallback(evt =>
             {
@@ -367,13 +407,14 @@ namespace Code.Editor.DialogsEditor.Graph
                     Value = evt.newValue,
                 };
             });
-            
+
             if (!string.IsNullOrEmpty(node.FlagModifier.Key))
             {
                 toggle.SetValueWithoutNotify(node.FlagModifier.Value);
             }
+
             root.Add(toggle);
-            
+
             var button = new Button(() =>
             {
                 node.FlagModifier.Key = string.Empty;
@@ -383,7 +424,7 @@ namespace Code.Editor.DialogsEditor.Graph
                 text = "X"
             };
             root.Add(button);
-            
+
             var textField = new TextField("Установить");
             textField.RegisterValueChangedCallback(evt =>
             {
@@ -393,17 +434,18 @@ namespace Code.Editor.DialogsEditor.Graph
                     Value = node.FlagModifier.Value,
                 };
             });
-            
+
             if (!string.IsNullOrEmpty(node.FlagModifier.Key))
             {
                 textField.SetValueWithoutNotify(node.FlagModifier.Key);
             }
+
             root.Add(textField);
-            
+
             node.contentContainer.Add(root);
         }
 
-        private DialogueNode AddStartNode()
+        private void AddStartNode()
         {
             var node = new DialogueNode
             {
@@ -420,16 +462,14 @@ namespace Code.Editor.DialogsEditor.Graph
 
             node.RefreshExpandedState();
             node.RefreshPorts();
-            node.SetPosition(new Rect(100, 200, 100, 150));
+            node.SetPosition(new Rect(300, 200, 100, 150));
 
             AddElement(node);
 
             StartNode = node;
-
-            return node;
         }
 
-        private Port AddPort(string portName, Node node, Direction nodeDirection, Port.Capacity capacity)
+        private void AddPort(string portName, Node node, Direction nodeDirection, Port.Capacity capacity)
         {
             var port = node.InstantiatePort(Orientation.Horizontal, nodeDirection, capacity, typeof(float));
 
@@ -443,8 +483,6 @@ namespace Code.Editor.DialogsEditor.Graph
             {
                 node.outputContainer.Add(port);
             }
-
-            return port;
         }
 
         public void ConnectNodes(Node output, Node input)

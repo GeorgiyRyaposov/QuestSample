@@ -179,6 +179,8 @@ namespace Code.Editor.DialogsEditor
         /// <param name="dialogueContainer"></param>
         private void LoadDialogueNodes(DialogueContainer dialogueContainer)
         {
+            _graphView.AddPropertiesToBlackBoard(dialogueContainer);
+            
             var dialogueNodesMap = new Dictionary<string, DialogueNode>();
             foreach (var dialogueNodeData in dialogueContainer.Dialogues)
             {
