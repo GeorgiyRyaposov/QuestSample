@@ -12,7 +12,6 @@ namespace Code.Scripts.Services
     {
         public async UniTaskVoid StartDialogue(DialoguesInfo dialoguesInfo)
         {
-            //TODO: add check which dialogue available to start
             var dialogueInfo = GetNextDialog(dialoguesInfo);
 
             await Mediator.GameplayStateMachine.EnterDialogueState();

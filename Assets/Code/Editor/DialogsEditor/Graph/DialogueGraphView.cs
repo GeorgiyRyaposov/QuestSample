@@ -20,7 +20,9 @@ namespace Code.Editor.DialogsEditor.Graph
         public DialogueNode StartNode { get; private set; }
         public bool HasChanges { get; set; }
 
-        public Blackboard Blackboard = new();
+        private const float _topPadding = 80f;
+        
+        private readonly Blackboard _blackboard = new();
 
         private readonly CharactersContainer _characterContainer;
         private CharacterInfo[] Characters => _characterContainer.Characters;
@@ -52,8 +54,8 @@ namespace Code.Editor.DialogsEditor.Graph
             _characterContainer = AssetDatabaseUtils.FindAsset<CharactersContainer>();
             _characterNames = _characterContainer.Characters.Select(x => x.CharacterName).ToList();
 
-            Blackboard.SetPosition(new Rect(10, 200, 250, 300));
-            Add(Blackboard);
+            _blackboard.SetPosition(new Rect(10, 20 + _topPadding, 300, 350));
+            Add(_blackboard);
 
             _nodeStyle = AssetDatabaseUtils.FindAsset<StyleSheet>("NodeStyleSheet");
             _flagRequirementStyleSheet = AssetDatabaseUtils.FindAsset<StyleSheet>("FlagRequirementStyleSheet");
@@ -70,10 +72,9 @@ namespace Code.Editor.DialogsEditor.Graph
         private void AddMiniMap()
         {
             var miniMap = new MiniMap();
-            miniMap.SetPosition(new Rect(10, 30, 150, 150));
+            miniMap.SetPosition(new Rect(10, 400 + _topPadding, 150, 150));
             Add(miniMap);
         }
-
 
         private void AddSearchWindow(DialogueEditor editorWindow)
         {
@@ -317,12 +318,12 @@ namespace Code.Editor.DialogsEditor.Graph
             container.Add(flagViewsTree);
 
             container.Bind(new SerializedObject(dialogueContainer));
-            Blackboard.Add(container);
+            _blackboard.Add(container);
         }
 
         public void ResetGraph()
         {
-            Blackboard.Clear();
+            _blackboard.Clear();
             ClearNodes();
             AddStartNode();
             HasChanges = false;

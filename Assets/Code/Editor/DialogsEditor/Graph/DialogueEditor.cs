@@ -35,18 +35,24 @@ namespace Code.Editor.DialogsEditor.Graph
 
         private void GenerateToolbar()
         {
-            var toolbar = new Toolbar();
+            var toolbar = new Toolbar
+            {
+                style =
+                {
+                    position = new StyleEnum<Position>(Position.Absolute),
+                    width = 310,
+                    flexDirection = FlexDirection.Column,
+                }
+            };
             
             _fileNameTextField = new TextField("Имя файла диалога:");
             _fileNameTextField.SetValueWithoutNotify(_fileName);
             _fileNameTextField.RegisterValueChangedCallback(evt => _fileName = evt.newValue);
 
-            _dialogueContainer = CreateInstance<DialogueContainer>();
             var objectField = new ObjectField
             {
                 objectType = typeof(DialogueContainer)
             };
-            objectField.SetValueWithoutNotify(_dialogueContainer);
             objectField.RegisterValueChangedCallback(evt =>
             {
                 CheckUnsavedChanges();
@@ -56,14 +62,15 @@ namespace Code.Editor.DialogsEditor.Graph
 
                 Load();
             });
-            toolbar.Add(objectField);
             
+            toolbar.Add(new Button(CreateNew) { text = "Создать новый" });
+            toolbar.Add(_fileNameTextField);
+            toolbar.Add(objectField);
             toolbar.Add(new Button(SaveChanges) { text = "Сохранить" });
             
-            toolbar.Add(_fileNameTextField);
-            toolbar.Add(new Button(CreateNew) { text = "Создать новый" });
-            
             rootVisualElement.Add(toolbar);
+
+            CreateNew();
         }
 
         private void CreateNew()
