@@ -72,6 +72,7 @@ namespace Code.Editor.DialogsEditor.Graph
             
             _dialogueContainer = CreateInstance<DialogueContainer>();
             _graphView.ResetGraph();
+            _graphView.AddPropertiesToBlackBoard(_dialogueContainer);
         }
 
         private void Save()

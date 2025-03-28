@@ -21,6 +21,12 @@ namespace Code.Scripts.Configs.InteractionItems
                 Debug.LogError($"Unsupported InteractionItemInfo {itemInfo}", itemInfo);
                 return UniTask.CompletedTask;
             }
+
+            if (!Mediator.Get<DialoguesService>().HasAvailableDialog(dialoguesInfo))
+            {
+                Debug.Log($"No available dialog for {dialoguesInfo}", dialoguesInfo);
+                return UniTask.CompletedTask;
+            }
             
             Mediator.Get<DialoguesService>().StartDialogue(dialoguesInfo).Forget();
             return UniTask.CompletedTask;

@@ -60,6 +60,7 @@ namespace Code.Scripts.App.Init
                 new InteractionsService(),
                 new StageService(),
                 new DialoguesService(),
+                new BlackboardService(),
             };
             
             foreach (var service in services)

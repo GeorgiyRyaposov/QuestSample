@@ -14,13 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DialogueName: "\u041C\u043E\u0441\u0442 \u0441\u043C\u0435\u0440\u0442\u0438"
   StartDialogueGuid: b0a45c81-8da9-4774-bb98-fc324abcfda9
-  CanBeStartedAfterDialogues:
-  - {fileID: 11400000}
-  CanBeStartedByFlags:
-  - Key: qqq
-    Value: 0
-  - Key: 222
-    Value: 0
+  CanBeStartedAfterDialogues: []
+  CanBeStartedByFlags: []
   Dialogues:
   - Guid: 377717c9-fc01-4bff-a9ec-e32162fb0f0b
     SpeakerId: 12e59a51-eb3f-4f0a-b118-c7d491550246
@@ -128,11 +123,7 @@ MonoBehaviour:
     Text: "\u041D\u0435 \u0437\u043D\u0430\u044E.."
     NodePosition: {x: 3141, y: 179}
   Comments: []
-  DialoguesFlagsRequirements:
-  - TargetId: ec34d86a-f964-4de2-bbb2-149d5987b1c4
-    Flag:
-      Key: SomeKey
-      Value: 1
+  DialoguesFlagsRequirements: []
   OptionsFlagsRequirements: []
   OptionsFlagsModifiers:
   - TargetId: 10bc0439-7900-46ea-9cf1-9729ae57ebde
@@ -158,4 +149,8 @@ MonoBehaviour:
   - TargetId: 10bc0439-7900-46ea-9cf1-9729ae57ebde
     Flag:
       Key: SomeKey
+      Value: 1
+  - TargetId: 39a5bd39-2d51-4583-99d1-becdaa4b6592
+    Flag:
+      Key: T123
       Value: 1

@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78b3fd9154634ebdb8c8a48960b9a16a, type: 3}
+  m_Name: LinkTest
+  m_EditorClassIdentifier: 
+  DialogueName: SomeName
+  StartDialogueGuid: 836167e0-1579-42da-b263-fba522bc8daf
+  CanBeStartedAfterDialogues: []
+  CanBeStartedByFlags:
+  - Key: T123
+    Value: 1
+  Dialogues:
+  - Guid: 836167e0-1579-42da-b263-fba522bc8daf
+    SpeakerId: 12e59a51-eb3f-4f0a-b118-c7d491550246
+    Text: Hello
+    NodePosition: {x: 443, y: 224}
+  Options:
+  - Guid: 10b6a056-3f58-4c60-827b-434879ed1e40
+    BaseDialogueGuid: 836167e0-1579-42da-b263-fba522bc8daf
+    TargetDialogueGuid: 
+    Text: Hi
+    NodePosition: {x: 731, y: 250}
+  Comments: []
+  DialoguesFlagsRequirements: []
+  OptionsFlagsRequirements: []
+  OptionsFlagsModifiers: []

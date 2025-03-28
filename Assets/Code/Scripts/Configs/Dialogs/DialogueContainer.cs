@@ -25,27 +25,26 @@ namespace Code.Scripts.Configs.Dialogs
         
         public List<FlagModifier> OptionsFlagsModifiers = new();
         
-#if UNITY_EDITOR
-        [UnityEditor.CustomEditor(typeof(DialogueContainer))]
-        public class DialogueContainerEditor : UnityEditor.Editor
-        {
-            public override void OnInspectorGUI()
-            {
-                if (GUILayout.Button("Temp"))
-                {
-                    var container = (DialogueContainer)target;
-                    foreach (var option in container.Options)
-                    {
-                        option.Guid = Guid.NewGuid().ToString();
-                    }
-                    
-                    UnityEditor.EditorUtility.SetDirty(target);
-                }
-
-                DrawDefaultInspector();
-            }
-        }
-
-#endif
+// #if UNITY_EDITOR
+//         [UnityEditor.CustomEditor(typeof(DialogueContainer))]
+//         public class DialogueContainerEditor : UnityEditor.Editor
+//         {
+//             public override void OnInspectorGUI()
+//             {
+//                 if (GUILayout.Button("Temp"))
+//                 {
+//                     var container = (DialogueContainer)target;
+//                     foreach (var option in container.Options)
+//                     {
+//                         option.Guid = Guid.NewGuid().ToString();
+//                     }
+//                     
+//                     UnityEditor.EditorUtility.SetDirty(target);
+//                 }
+//
+//                 DrawDefaultInspector();
+//             }
+//         }
+// #endif
     }
 }

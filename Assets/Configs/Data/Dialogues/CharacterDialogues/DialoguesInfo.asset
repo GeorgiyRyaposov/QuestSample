@@ -16,4 +16,5 @@ MonoBehaviour:
   Action: {fileID: 11400000, guid: 026fd59556e26ea48a6fc70a81cb658f, type: 2}
   Priority: 0
   Dialogues:
-  - {fileID: 11400000, guid: 35e90a9e77a53c1418b1af85a721d64a, type: 2}
+  - {fileID: 11400000, guid: 59395d9a88c5990428c9e6643bc8e50a, type: 2}
+  - {fileID: 11400000, guid: ed5d0471cfa265d48b4c96515aa0b1a6, type: 2}
