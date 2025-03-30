@@ -21,7 +21,7 @@ namespace Code.Scripts.App.AppState
         {
             await Preloader.Show(true);
             
-            Unload();
+            await Unload();
 
             if (!ScenesConsts.IsSceneLoaded(ScenesConsts.Gameplay))
             {
@@ -58,11 +58,18 @@ namespace Code.Scripts.App.AppState
             await op;
         }
 
-        private void Unload()
+        private async UniTask Unload()
         {
             if (_loadGameplaySceneHandle.IsValid())
             {
-                Addressables.Release(_loadGameplaySceneHandle);
+                var unloadOp = Addressables.UnloadSceneAsync(_loadGameplaySceneHandle);
+                await unloadOp.Task;
+            }
+
+            if (_loadGuiSceneHandle.IsValid())
+            {
+                var unloadOp = Addressables.UnloadSceneAsync(_loadGuiSceneHandle);
+                await unloadOp.Task;
             }
         }
     }

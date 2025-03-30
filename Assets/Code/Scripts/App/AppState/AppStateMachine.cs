@@ -1,3 +1,6 @@
+using Code.Scripts.App.Common;
+using Code.Scripts.Persistence;
+using Code.Scripts.Services;
 using Code.Scripts.Services.Common;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -26,6 +29,13 @@ namespace Code.Scripts.App.AppState
         
         public async UniTask LoadGameplay()
         {
+            await Enter(_prepareGameState);
+            await Enter(_gameplayState);
+        }
+        
+        public async UniTask LoadGameplay(SaveMetadata saveFile)
+        {
+            await Mediator.Get<GameStateService>().LoadSessionStateAsync(saveFile);
             await Enter(_prepareGameState);
             await Enter(_gameplayState);
         }

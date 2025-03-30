@@ -63,12 +63,18 @@ namespace Code.Scripts.Services
         {
             SprintInput(context.ReadValueAsButton());
         }
-        
+
         #endregion //IPlayerActions
         
         public void OnDialogueClick(InputAction.CallbackContext context)
         {
             State.DialogueClicked = context.ReadValueAsButton();
+        }
+        
+
+        public void OnPauseGame(InputAction.CallbackContext context)
+        {
+            State.PauseGame = context.ReadValueAsButton();
         }
         
         private void MoveInput(Vector2 newMoveDirection)

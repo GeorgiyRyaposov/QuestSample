@@ -4,6 +4,7 @@ using Code.Scripts.App.Common;
 using Code.Scripts.Components;
 using Code.Scripts.Configs;
 using Code.Scripts.GameplayStates;
+using Code.Scripts.Persistence;
 using Code.Scripts.Services.Common;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -14,15 +15,15 @@ namespace Code.Scripts.Services
     {
         private StagesContainer StagesContainer => Mediator.Get<AssetsService>().StagesContainer;
         private StageLoader _stageLoader;
-
-        public async UniTask LoadNextStage(StageInfo stageToLoad)
+        
+        public async UniTask LoadStage(StageInfo stageToLoad)
         {
-            Mediator.SessionState.PreviousStageId = Mediator.SessionState.CurrentStageId;
-            Mediator.SessionState.CurrentStageId = stageToLoad.Id;
+            if (_stageLoader != null)
+            {
+                await _stageLoader.UnloadAsync();
+            }
 
-            _stageLoader?.Dispose();
-
-            _stageLoader = new StageLoader(stageToLoad);
+            _stageLoader = new StageLoader(stageToLoad.Scene);
             await _stageLoader.LoadStage();
 
             PrepareScene(_stageLoader.GetSceneGameObjects());
@@ -58,14 +59,9 @@ namespace Code.Scripts.Services
         
         private void SpawnPlayer(PlayerSpawnPoint[] playerSpawnPoints)
         {
-            var spawnPoint = FindSpawnPoint(playerSpawnPoints);
-            if (!spawnPoint)
-            {
-                Debug.LogError($"Failed to find player spawn point at '{Mediator.SessionState.CurrentStageId}'");
-                return;
-            }
+            var position = GetSpawnPoint(playerSpawnPoints);
 
-            var ray = new Ray(spawnPoint.transform.position + Vector3.up * 10, Vector3.down);
+            var ray = new Ray(position + Vector3.up * 2, Vector3.down);
             if (!Physics.Raycast(ray, out var hitInfo, 20f, 1 << LayerMask.NameToLayer("Ground")))
             {
                 Debug.LogError($"Failed to find player spawn point ground at '{Mediator.SessionState.CurrentStageId}'");
@@ -75,10 +71,40 @@ namespace Code.Scripts.Services
             Mediator.PlayerCharacter.transform.position = hitInfo.point;
         }
 
+        private static Vector3 GetSpawnPoint(PlayerSpawnPoint[] playerSpawnPoints)
+        {
+            var loadAtSpawnPoint =
+                Mediator.GameState.StageLoadingMode 
+                    is StageLoadingMode.StageTransition 
+                    or StageLoadingMode.NewGame;
+                                   
+            if (loadAtSpawnPoint)
+            {
+                var spawnPoint = FindSpawnPoint(playerSpawnPoints);
+                if (!spawnPoint)
+                {
+                    Debug.LogError($"Failed to find player spawn point at '{Mediator.SessionState.CurrentStageId}'");
+                    spawnPoint = playerSpawnPoints.FirstOrDefault();
+                
+                    return !spawnPoint ? Vector3.zero : spawnPoint.transform.position;
+                }
+
+                return spawnPoint.transform.position;
+            }
+
+            if (Mediator.GameState.StageLoadingMode == StageLoadingMode.SavesLoading)
+            {
+                return Mediator.SessionState.PlayerPosition;
+            }
+
+            Debug.LogError($"Loading stage mode undefined '{Mediator.GameState.StageLoadingMode}'");
+            return Vector3.zero;
+        }
+
         private static PlayerSpawnPoint FindSpawnPoint(PlayerSpawnPoint[] playerSpawnPoints)
         {
             PlayerSpawnPoint spawnPoint;
-            
+
             var prevStage = Mediator.SessionState.PreviousStageId;
             if (string.IsNullOrEmpty(prevStage))
             {

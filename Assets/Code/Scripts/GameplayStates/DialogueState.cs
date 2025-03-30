@@ -6,6 +6,8 @@ namespace Code.Scripts.GameplayStates
 {
     public class DialogueState : State
     {
+        private PauseGameListener _pauseGameListener = new();
+        
         public override UniTask Enter()
         {
             Mediator.HintsView.Hide();
@@ -24,6 +26,8 @@ namespace Code.Scripts.GameplayStates
                     Mediator.DialoguePanelView.SkipDialog();
                 }
             }
+            
+            _pauseGameListener.OnUpdate();
         }
 
         public override async UniTask Exit()

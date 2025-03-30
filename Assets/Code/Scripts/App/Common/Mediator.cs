@@ -2,6 +2,7 @@
 using Code.Scripts.GameplayStates;
 using Code.Scripts.Persistence;
 using Code.Scripts.Services.Common;
+using Code.Scripts.Views.CommonViews;
 using Code.Scripts.Views.GameplayViews;
 using UnityEngine;
 
@@ -15,6 +16,8 @@ namespace Code.Scripts.App.Common
 
         public static HintsView HintsView;
         public static DialoguePanelView DialoguePanelView;
+        public static LoadMenuView LoadMenuView;
+        public static InGameMenuView InGameMenuView;
         
         /// <summary>
         /// Do not cache, lazy ass edition
@@ -57,6 +60,7 @@ namespace Code.Scripts.App.Common
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ClearValues()
         {
+            _serviceLocator = null;
             GameplayStateMachine = null;
             PlayerCharacter = null;
             PlayerCineMachine = null;
@@ -65,8 +69,9 @@ namespace Code.Scripts.App.Common
             SessionState = null;
             InputState = null;
             InputSettings = null;
-            _serviceLocator = null;
             DialoguePanelView = null;
+            LoadMenuView = null;
+            InGameMenuView = null;
         }
     }
 }

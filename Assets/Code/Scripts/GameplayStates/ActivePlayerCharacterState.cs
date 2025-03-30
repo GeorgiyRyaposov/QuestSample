@@ -8,6 +8,7 @@ namespace Code.Scripts.GameplayStates
     public class ActivePlayerCharacterState : State
     {
         private InputState InputState => Mediator.InputState;
+        private readonly PauseGameListener _pauseGameListener = new();
         
         public override UniTask Enter()
         {
@@ -30,6 +31,8 @@ namespace Code.Scripts.GameplayStates
                 
                 Interact().Forget();
             }
+            
+            _pauseGameListener.OnUpdate();
         }
 
         private async UniTaskVoid Interact()

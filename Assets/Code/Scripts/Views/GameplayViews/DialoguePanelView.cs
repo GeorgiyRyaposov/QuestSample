@@ -3,8 +3,8 @@ using System.Linq;
 using Code.Scripts.App.Common;
 using Code.Scripts.Configs.Dialogs;
 using Code.Scripts.Services;
+using Code.Scripts.Utils;
 using Cysharp.Threading.Tasks;
-using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using CharacterInfo = Code.Scripts.Configs.InteractionItems.CharacterInfo;
@@ -42,12 +42,7 @@ namespace Code.Scripts.Views.GameplayViews
 
         public async UniTask Hide()
         {
-            _canvasGroup.DOFade(0f, _showDuration).SetEase(Ease.Flash);
-            await UniTask.WaitForSeconds(_showDuration);
-            
-            _canvasGroup.alpha = 0;
-            _canvasGroup.interactable = false;
-            _canvasGroup.blocksRaycasts = false;
+            await CanvasGroupUtil.Hide(_canvasGroup, _showDuration);
         }
         
         public void SkipDialog()
@@ -69,11 +64,7 @@ namespace Code.Scripts.Views.GameplayViews
             ClearOptions();
             _dialogue.text = string.Empty;
 
-            _canvasGroup.DOFade(1f, _showDuration).SetEase(Ease.Flash);
-            await UniTask.WaitForSeconds(_showDuration);
-            
-            _canvasGroup.interactable = true;
-            _canvasGroup.blocksRaycasts = true;
+            await CanvasGroupUtil.Show(_canvasGroup, _showDuration);
             
             await Show(startDialogue);
         }

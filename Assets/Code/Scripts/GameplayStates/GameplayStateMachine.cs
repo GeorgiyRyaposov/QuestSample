@@ -1,5 +1,6 @@
 ﻿using Code.Scripts.App.Common;
 using Code.Scripts.Configs;
+using Code.Scripts.Persistence;
 using Code.Scripts.Services;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -22,7 +23,17 @@ namespace Code.Scripts.GameplayStates
         public async UniTask EnterInitialState()
         {
             var stageInfo = Mediator.Get<StageService>().GetCurrentStageOrInitial();
-            _loadingState.SetNextStage(stageInfo);
+            if (string.IsNullOrEmpty(Mediator.GameState.SessionState.CurrentStageId))
+            {
+                Mediator.GameState.StageLoadingMode = StageLoadingMode.NewGame;
+                Mediator.SessionState.CurrentStageId = stageInfo.Id;
+            }
+            else
+            {
+                Mediator.GameState.StageLoadingMode = StageLoadingMode.SavesLoading;
+            }
+            
+            _loadingState.SetStageToLoad(stageInfo);
             
             await SetState(_loadingState);
             await SetState(_activeCharacterState);
@@ -30,7 +41,12 @@ namespace Code.Scripts.GameplayStates
         
         public async UniTaskVoid GoToStage(StageInfo stageInfo)
         {
-            _loadingState.SetNextStage(stageInfo);
+            Mediator.GameState.StageLoadingMode = StageLoadingMode.StageTransition;
+            
+            Mediator.SessionState.PreviousStageId = Mediator.SessionState.CurrentStageId;
+            Mediator.SessionState.CurrentStageId = stageInfo.Id;
+            
+            _loadingState.SetStageToLoad(stageInfo);
             await SetState(_loadingState);
             await SetState(_activeCharacterState);
         }

@@ -133,6 +133,11 @@ namespace Code.Scripts.Components
         private void LateUpdate()
         {
             CameraRotation();
+
+            if (_grounded)
+            {
+                Mediator.SessionState.PlayerPosition = transform.position;
+            }
         }
 
         private void AssignAnimationIDs()

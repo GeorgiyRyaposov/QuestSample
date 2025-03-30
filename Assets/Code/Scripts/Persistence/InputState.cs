@@ -11,6 +11,7 @@ namespace Code.Scripts.Persistence
         public bool Interact;
         
         public bool DialogueClicked;
+        public bool PauseGame;
 
         public bool IsCurrentDeviceMouse = true;
     }

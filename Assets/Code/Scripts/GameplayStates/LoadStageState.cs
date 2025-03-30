@@ -10,7 +10,7 @@ namespace Code.Scripts.GameplayStates
     {
         private StageInfo _stageToLoad;
 
-        public void SetNextStage(StageInfo stageInfo)
+        public void SetStageToLoad(StageInfo stageInfo)
         {
             _stageToLoad = stageInfo;
         }
@@ -21,7 +21,7 @@ namespace Code.Scripts.GameplayStates
 
             SetPlayerCharacterActive(false);
             
-            await Mediator.Get<StageService>().LoadNextStage(_stageToLoad);
+            await Mediator.Get<StageService>().LoadStage(_stageToLoad);
             
             SetPlayerCharacterActive(true);
             

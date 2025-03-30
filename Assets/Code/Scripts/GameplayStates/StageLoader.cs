@@ -1,5 +1,4 @@
 ﻿using System;
-using Code.Scripts.Configs;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -11,28 +10,28 @@ namespace Code.Scripts.GameplayStates
 {
     public class StageLoader : IDisposable
     {
-        private readonly StageInfo _stageToLoad;
+        private readonly AssetReference _sceneToLoad;
         
-        private AsyncOperationHandle<SceneInstance> _loadStageHandle;
+        private AsyncOperationHandle<SceneInstance> _loadHandle;
         private SceneInstance _sceneInstance;
+        private bool _isDisposed;
 
-        public StageLoader(StageInfo stageInfo)
+        public StageLoader(AssetReference scene)
         {
-            _stageToLoad = stageInfo;
+            _sceneToLoad = scene;
         }
         
         public async UniTask LoadStage()
         {
-            _loadStageHandle = Addressables.LoadSceneAsync(_stageToLoad.Scene, LoadSceneMode.Additive);
-            await _loadStageHandle.Task;
-
-            _sceneInstance = _loadStageHandle.Result;
-
-            var op = _sceneInstance.ActivateAsync();
-            op.allowSceneActivation = true;
-            await op;
+            if (_isDisposed)
+            {
+                throw new ObjectDisposedException("StageLoader is already disposed");
+            }
             
-            PrepareStage();
+            _loadHandle = Addressables.LoadSceneAsync(_sceneToLoad, LoadSceneMode.Additive);
+            await _loadHandle.ToUniTask();
+
+            _sceneInstance = _loadHandle.Result;
         }
 
         public GameObject[] GetSceneGameObjects()
@@ -40,18 +39,47 @@ namespace Code.Scripts.GameplayStates
             return _sceneInstance.Scene.GetRootGameObjects();
         }
 
-        private void PrepareStage()
+        public async UniTask UnloadAsync()
         {
-            //todo: find StageLinks and remove collected interaction items and etc.
-            //spawn player at spawn point
-            //or better move to StagesService?..
+            if (_isDisposed || !_loadHandle.IsValid())
+            {
+                return;
+            }
+            
+            var unloadHandle = Addressables.UnloadSceneAsync(_loadHandle);
+            await unloadHandle.ToUniTask();
+            
+            if (unloadHandle.Status != AsyncOperationStatus.Succeeded)
+            {
+                Debug.LogError($"Scene unload failed: {unloadHandle.OperationException}");
+            }
+            
+            Dispose();
         }
-
+        
         public void Dispose()
         {
-            if (_loadStageHandle.IsValid())
+            if (_isDisposed)
             {
-                Addressables.Release(_loadStageHandle);
+                return;
+            }
+        
+            // Явно освобождаем ресурсы, если загрузка ещё не завершена
+            if (!_loadHandle.IsDone)
+            {
+                Addressables.Release(_loadHandle);
+            }
+
+            _sceneInstance = default;
+            _isDisposed = true;
+            GC.SuppressFinalize(this);
+        }
+        
+        ~StageLoader()
+        {
+            if (!_isDisposed)
+            {
+                Dispose();
             }
         }
     }
