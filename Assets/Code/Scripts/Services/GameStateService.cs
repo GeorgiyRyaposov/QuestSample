@@ -14,6 +14,12 @@ namespace Code.Scripts.Services
         {
             Mediator.SetStateLinks(_gameState);
         }
+        
+        public void ResetGameState()
+        {
+            _gameState.SessionState = new SessionStateData();
+            Mediator.SetStateLinks(_gameState);
+        }
 
         public async UniTask LoadSessionStateAsync(SaveMetadata saveFile)
         {

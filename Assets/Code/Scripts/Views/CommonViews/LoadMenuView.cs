@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Code.Scripts.App.Common;
 using Code.Scripts.Services;
 using Code.Scripts.Utils;
@@ -25,6 +24,8 @@ namespace Code.Scripts.Views.CommonViews
         private void Awake()
         {
             Mediator.LoadMenuView = this;
+            
+            _closeButton.onClick.AddListener(Close);
         }
 
         private void OnDestroy()
@@ -41,6 +42,11 @@ namespace Code.Scripts.Views.CommonViews
         public async UniTask Hide()
         {
             await CanvasGroupUtil.Hide(_canvasGroup, _showDuration);
+        }
+        
+        private void Close()
+        {
+            Hide().Forget();
         }
 
         private async UniTask PrepareSaveFiles()

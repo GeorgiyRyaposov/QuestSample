@@ -1,4 +1,5 @@
-﻿using Code.Scripts.App.Common;
+﻿using Code.Scripts.App.AppState;
+using Code.Scripts.App.Common;
 using Code.Scripts.Services;
 using Code.Scripts.Utils;
 using Cysharp.Threading.Tasks;
@@ -25,6 +26,8 @@ namespace Code.Scripts.Views.GameplayViews
             
             _loadButton.onClick.AddListener(OnLoadClicked);
             _saveButton.onClick.AddListener(OnSaveClicked);
+            _closeMenuButton.onClick.AddListener(OnCloseClicked);
+            _toMainMenuButton.onClick.AddListener(OnToMainMenuClicked);
         }
 
         private void OnDestroy()
@@ -52,6 +55,17 @@ namespace Code.Scripts.Views.GameplayViews
         {
             Hide().Forget();
             Mediator.LoadMenuView.Show().Forget();
+        }
+        
+
+        private void OnToMainMenuClicked()
+        {
+            Mediator.Get<AppStateMachine>().ReturnToMainMenu().Forget();
+        }
+
+        private void OnCloseClicked()
+        {
+            Hide().Forget();
         }
     }
 }

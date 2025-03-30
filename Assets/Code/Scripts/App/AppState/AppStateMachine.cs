@@ -29,6 +29,7 @@ namespace Code.Scripts.App.AppState
         
         public async UniTask StartNewGame()
         {
+            Mediator.Get<GameStateService>().ResetGameState();
             await Enter(_prepareGameState);
             await Enter(_gameplayState);
         }
@@ -38,6 +39,11 @@ namespace Code.Scripts.App.AppState
             await Mediator.Get<GameStateService>().LoadSessionStateAsync(saveFile);
             await Enter(_prepareGameState);
             await Enter(_gameplayState);
+        }
+        
+        public async UniTask ReturnToMainMenu()
+        {
+            await Enter(_mainMenuState);
         }
         
         private async UniTask Setup(IAppState state)
