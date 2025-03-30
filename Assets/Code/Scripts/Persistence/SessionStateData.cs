@@ -19,6 +19,7 @@ namespace Code.Scripts.Persistence
         
         public BoolBlackboard BoolBlackboard = new();
         
+        public Vector3 LastGroundedPlayerPosition;
         public Vector3 PlayerPosition;
     }
 }

@@ -1,4 +1,5 @@
-﻿using Code.Scripts.App.Common;
+﻿using System.Linq;
+using Code.Scripts.App.Common;
 using Code.Scripts.Persistence;
 using Code.Scripts.Services.Common;
 using Cysharp.Threading.Tasks;
@@ -17,6 +18,7 @@ namespace Code.Scripts.Services
         public async UniTask LoadSessionStateAsync(SaveMetadata saveFile)
         {
             _gameState.SessionState = await SaveManager.LoadDataAsync(saveFile.DataFileName);
+            Mediator.SetStateLinks(_gameState);
         }
 
         public async UniTask AutoSaveSessionStateAsync()
@@ -34,6 +36,7 @@ namespace Code.Scripts.Services
         private async UniTask SaveSessionStateAsync(string saveName)
         {
             _gameState.SaveInProgress = true;
+            _gameState.SessionState.PlayerPosition = _gameState.SessionState.LastGroundedPlayerPosition;
             await SaveManager.SaveAsync(_gameState.SessionState, saveName);
             _gameState.SaveInProgress = false;
         }
@@ -49,7 +52,15 @@ namespace Code.Scripts.Services
                 metaData[i++] = data;
             }
             
+            metaData = metaData.OrderByDescending(x => x.SaveDate).ToArray();
+            
             return metaData;
+        }
+
+        public async UniTask<SaveMetadata> GetLatestSaveFile()
+        {
+            var files = await GetSaveFiles();
+            return files.FirstOrDefault();
         }
     }
 }

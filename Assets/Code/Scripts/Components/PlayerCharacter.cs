@@ -136,7 +136,7 @@ namespace Code.Scripts.Components
 
             if (_grounded)
             {
-                Mediator.SessionState.PlayerPosition = transform.position;
+                Mediator.SessionState.LastGroundedPlayerPosition = transform.position;
             }
         }
 

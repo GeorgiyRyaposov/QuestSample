@@ -24,9 +24,9 @@ namespace Code.Scripts.Views.CommonViews
         {
             _saveFile = saveFile;
             
-            _description.text = $"{saveFile.SaveName} - " +
+            _description.text = $"{saveFile.SaveName}-" +
                                 $"{saveFile.SaveDate.ToLocalTime().ToShortDateString()} " +
-                                $"{saveFile.SaveDate.ToLocalTime().ToShortTimeString()}";
+                                $"{saveFile.SaveDate.ToLocalTime().ToLongTimeString()}";
         }
         
         private void LoadFile()

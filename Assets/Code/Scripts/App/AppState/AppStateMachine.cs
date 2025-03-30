@@ -27,7 +27,7 @@ namespace Code.Scripts.App.AppState
             await Enter(_gameplayState);
         }
         
-        public async UniTask LoadGameplay()
+        public async UniTask StartNewGame()
         {
             await Enter(_prepareGameState);
             await Enter(_gameplayState);

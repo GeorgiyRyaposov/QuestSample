@@ -48,7 +48,6 @@ namespace Code.Scripts.Views.CommonViews
             ClearSaveFiles();
             
             var saveFiles = await Mediator.Get<GameStateService>().GetSaveFiles();
-            saveFiles = saveFiles.OrderBy(x => x.SaveDate).ToArray();
             
             foreach (var saveFile in saveFiles)
             {

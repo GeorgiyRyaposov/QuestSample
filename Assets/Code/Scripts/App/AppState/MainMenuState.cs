@@ -1,4 +1,5 @@
-﻿using Code.Scripts.App.ScenesManagement;
+﻿using Code.Scripts.App.Common;
+using Code.Scripts.App.ScenesManagement;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -23,6 +24,9 @@ namespace Code.Scripts.App.AppState
             
             _operationHandle = Addressables.LoadSceneAsync(_mainMenuSceneReference, LoadSceneMode.Single);
             await _operationHandle.Task;
+            
+            Mediator.SessionState.CurrentStageId = string.Empty;
+            Mediator.SessionState.PreviousStageId = string.Empty;
             
             await Preloader.Hide();
         }

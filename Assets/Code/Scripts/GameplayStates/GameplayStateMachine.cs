@@ -65,6 +65,8 @@ namespace Code.Scripts.GameplayStates
         {
             await _activeState.Exit();
             _activeState = _emptyState;
+
+            Mediator.GameState.StageLoadingMode = StageLoadingMode.None;
         }
 
         private async UniTask SetState(State state)
