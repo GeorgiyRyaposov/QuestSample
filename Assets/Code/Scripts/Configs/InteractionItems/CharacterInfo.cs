@@ -1,6 +1,7 @@
 ﻿using System;
 using Code.Scripts.Utils;
 using UnityEngine;
+using UnityEngine.Localization;
 
 namespace Code.Scripts.Configs.InteractionItems
 {
@@ -10,7 +11,7 @@ namespace Code.Scripts.Configs.InteractionItems
         [ScriptableObjectId]
         public string Id;
         
-        public string CharacterName;
+        public LocalizedString LocalizedName; 
         
 #if UNITY_EDITOR
         private void OnValidate()

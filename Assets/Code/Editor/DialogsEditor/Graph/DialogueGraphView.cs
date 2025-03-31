@@ -8,10 +8,14 @@ using Code.Scripts.Configs.Dialogs;
 using Code.Scripts.Configs.InteractionItems;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.Localization;
 using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Tables;
 using UnityEngine.UIElements;
 using CharacterInfo = Code.Scripts.Configs.InteractionItems.CharacterInfo;
+using ObjectField = UnityEditor.UIElements.ObjectField;
 
 namespace Code.Editor.DialogsEditor.Graph
 {
@@ -25,14 +29,18 @@ namespace Code.Editor.DialogsEditor.Graph
         private readonly Blackboard _blackboard = new();
 
         private readonly CharactersContainer _characterContainer;
-        private CharacterInfo[] Characters => _characterContainer.Characters;
         private readonly List<string> _characterNames;
 
         private NodeSearchWindow _searchWindow;
         private int _lastSelectedCharacterIndex;
+        private readonly StringTable _localizationTable;
+        private readonly StringTable _charactersTable;
+        
         private readonly StyleSheet _nodeStyle;
         private readonly StyleSheet _flagRequirementStyleSheet;
         private readonly StyleSheet _flagModifierStyleSheet;
+        private readonly TableReference _dialoguesTableName = "Dialogues";
+        private readonly TableReference _charactersTableName = "Characters";
 
 
         public DialogueGraphView(DialogueEditor editorWindow)
@@ -51,15 +59,27 @@ namespace Code.Editor.DialogsEditor.Graph
 
             AddSearchWindow(editorWindow);
 
+            _localizationTable = LoadStringTable(_dialoguesTableName);
+            _charactersTable = LoadStringTable(_charactersTableName);
+            
             _characterContainer = AssetDatabaseUtils.FindAsset<CharactersContainer>();
-            _characterNames = _characterContainer.Characters.Select(x => x.CharacterName).ToList();
+            _characterNames = _characterContainer.Characters.Select(x => 
+                GetCharacterNameTranslation(x.LocalizedName)).ToList();
 
             _blackboard.SetPosition(new Rect(10, 20 + _topPadding, 300, 350));
             Add(_blackboard);
+            
 
             _nodeStyle = AssetDatabaseUtils.FindAsset<StyleSheet>("NodeStyleSheet");
             _flagRequirementStyleSheet = AssetDatabaseUtils.FindAsset<StyleSheet>("FlagRequirementStyleSheet");
             _flagModifierStyleSheet = AssetDatabaseUtils.FindAsset<StyleSheet>("FlagModifierStyleSheet");
+        }
+
+        private StringTable LoadStringTable(string tableName)
+        {
+            var stringTable = LocalizationEditorSettings.GetStringTableCollection(tableName);
+            var local = LocalizationEditorSettings.GetLocale("ru");
+            return stringTable.GetTable(local.Identifier) as StringTable;
         }
 
         private void AddBackground()
@@ -148,8 +168,9 @@ namespace Code.Editor.DialogsEditor.Graph
             var node = new DialogueNode
             {
                 Guid = data.Guid,
-                title = string.IsNullOrEmpty(data.Text) ? "Dialogue" : data.Text,
-                Text = data.Text,
+                title = data.LocalizedText?.TableEntryReference,
+                TextId = data.LocalizedText?.TableEntryReference,
+                TableId = data.LocalizedText?.TableReference,
                 SpeakerId = data.SpeakerId,
             };
             node.styleSheets.Add(_nodeStyle);
@@ -162,7 +183,7 @@ namespace Code.Editor.DialogsEditor.Graph
             //add character selection drop down
             var charactersSelector = new DropdownField(_characterNames, _lastSelectedCharacterIndex, selectedName =>
             {
-                var index = GetCharacterIndex(selectedName);
+                var index = _characterNames.IndexOf(selectedName);
                 if (index == -1)
                 {
                     return selectedName;
@@ -170,10 +191,15 @@ namespace Code.Editor.DialogsEditor.Graph
 
                 _lastSelectedCharacterIndex = index;
 
-                node.SpeakerId = Characters[index].Id;
+                node.SpeakerId = _characterContainer.Characters[index].Id;
 
                 return selectedName;
             });
+            var characterInfo = _characterContainer.Characters.FirstOrDefault(x => x.Id == node.SpeakerId);
+            if (characterInfo != null)
+            {
+                charactersSelector.SetValueWithoutNotify(GetCharacterNameTranslation(characterInfo.LocalizedName));
+            }
             node.contentContainer.Add(charactersSelector);
 
             //add flag requirement
@@ -189,15 +215,23 @@ namespace Code.Editor.DialogsEditor.Graph
             };
             node.mainContainer.Add(button);
 
-            //add text field
-            var textField = new TextField("");
-            textField.RegisterValueChangedCallback(evt =>
+            var localizedTextLabel = new Label
             {
-                node.Text = evt.newValue;
+                text = GetDialogTranslation(node.TextId),
+            };
+            localizedTextLabel.AddToClassList("wrap");
+
+            var textKeyField = new TextField();
+            textKeyField.SetValueWithoutNotify(node.TextId);
+            textKeyField.RegisterValueChangedCallback(evt =>
+            {
                 node.title = evt.newValue;
+                node.TextId = evt.newValue;
+                node.TableId = _dialoguesTableName;
+                localizedTextLabel.text = GetDialogTranslation(evt.newValue);
             });
-            textField.SetValueWithoutNotify(node.Text);
-            node.contentContainer.Add(textField);
+            node.contentContainer.Add(textKeyField);
+            node.contentContainer.Add(localizedTextLabel);
 
             node.RefreshPorts();
 
@@ -208,17 +242,21 @@ namespace Code.Editor.DialogsEditor.Graph
             return node;
         }
 
-        private int GetCharacterIndex(string characterName)
+        private string GetDialogTranslation(string keyName)
         {
-            for (int i = 0; i < Characters.Length; i++)
+            if (string.IsNullOrEmpty(keyName))
             {
-                if (string.Equals(characterName, Characters[i].CharacterName, StringComparison.Ordinal))
-                {
-                    return i;
-                }
+                return "Введите ключ строки";
             }
-
-            return -1;
+            
+            var value = _localizationTable.GetEntry(keyName)?.GetLocalizedString();
+            return string.IsNullOrEmpty(value) ? "Строка не найдена" : value;
+        }
+        
+        private string GetCharacterNameTranslation(LocalizedString localizedName)
+        {
+            var value = _charactersTable.GetEntry(localizedName.TableEntryReference.KeyId)?.GetLocalizedString();
+            return string.IsNullOrEmpty(value) ? "Строка не найдена" : value;
         }
 
         public void AddOptionNode(Vector2 position)
@@ -235,8 +273,9 @@ namespace Code.Editor.DialogsEditor.Graph
             var node = new DialogueOptionNode
             {
                 Guid = data.Guid,
-                title = string.IsNullOrEmpty(data.Text) ? "Option" : data.Text,
-                Text = data.Text,
+                title = data.LocalizedText?.TableEntryReference,
+                TextId = data.LocalizedText?.TableEntryReference,
+                TableId = data.LocalizedText?.TableReference,
             };
             node.styleSheets.Add(_nodeStyle);
 
@@ -245,14 +284,23 @@ namespace Code.Editor.DialogsEditor.Graph
 
             node.SetPosition(new Rect(data.NodePosition, node.contentRect.size));
 
-            var textField = new TextField("");
-            textField.RegisterValueChangedCallback(evt =>
+            var localizedTextLabel = new Label
             {
-                node.Text = evt.newValue;
+                text = GetDialogTranslation(node.TextId),
+            };
+            localizedTextLabel.AddToClassList("wrap");
+
+            var textKeyField = new TextField();
+            textKeyField.SetValueWithoutNotify(node.TextId);
+            textKeyField.RegisterValueChangedCallback(evt =>
+            {
                 node.title = evt.newValue;
+                node.TextId = evt.newValue;
+                node.TableId = _dialoguesTableName;
+                localizedTextLabel.text = GetDialogTranslation(evt.newValue);
             });
-            textField.SetValueWithoutNotify(node.Text);
-            node.contentContainer.Add(textField);
+            node.contentContainer.Add(textKeyField);
+            node.contentContainer.Add(localizedTextLabel);
 
             //add flag requirement
             var addRequirementBtn = new Button(() =>
@@ -452,7 +500,7 @@ namespace Code.Editor.DialogsEditor.Graph
             {
                 title = "START",
                 Guid = Guid.NewGuid().ToString(),
-                Text = "ENTRYPOINT",
+                TextId = "ENTRYPOINT",
                 IsEntryPoint = true
             };
 

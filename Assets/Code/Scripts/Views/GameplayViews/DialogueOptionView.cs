@@ -2,6 +2,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Localization.Components;
 using UnityEngine.UI;
 
 namespace Code.Scripts.Views.GameplayViews
@@ -9,6 +10,7 @@ namespace Code.Scripts.Views.GameplayViews
     public class DialogueOptionView : MonoBehaviour
     {
         [SerializeField] private TMP_Text _text;
+        [SerializeField] private LocalizeStringEvent _event;
         [SerializeField] private Button _button;
         
         private UnityAction<DialogueOptionView> _callback;
@@ -24,8 +26,9 @@ namespace Code.Scripts.Views.GameplayViews
         public void Setup(DialogueOptionData dialogueOptionData, UnityAction<DialogueOptionView> onSelected)
         {
             DialogueOptionData = dialogueOptionData;
-            
-            _text.text = dialogueOptionData.Text;
+
+            _event.StringReference = dialogueOptionData.LocalizedText;
+            _event.RefreshString();
             _callback = onSelected;
         }
         

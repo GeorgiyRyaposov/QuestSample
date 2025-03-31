@@ -14,3 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 12e59a51-eb3f-4f0a-b118-c7d491550246
   CharacterName: "\u0425\u0440\u0430\u043D\u0438\u0442\u0435\u043B\u044C \u043C\u043E\u0441\u0442\u0430"
+  LocalizedName:
+    m_TableReference:
+      m_TableCollectionName: GUID:db328453aca114b45846a89be6a71184
+    m_TableEntryReference:
+      m_KeyId: 20305887232
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []

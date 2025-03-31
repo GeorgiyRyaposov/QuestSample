@@ -7,6 +7,7 @@ using Code.Scripts.Utils;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization;
 using CharacterInfo = Code.Scripts.Configs.InteractionItems.CharacterInfo;
 
 namespace Code.Scripts.Views.GameplayViews
@@ -18,6 +19,9 @@ namespace Code.Scripts.Views.GameplayViews
         [SerializeField] private TMP_Text _dialogue;
         [SerializeField] private CanvasGroup _canvasGroup;
         
+        [SerializeField] private LocalizedString _speakerName;
+        [SerializeField] private LocalizedString _dialogText;
+        
         [Header("Animation")]
         [SerializeField] private float _showDuration = 0.5f;
         [SerializeField] private float _textAwait = 0.01f;
@@ -28,6 +32,7 @@ namespace Code.Scripts.Views.GameplayViews
         private readonly List<DialogueOptionView> _options = new();
         private readonly Stack<DialogueOptionView> _optionsPool = new();
         private DialogueContainer _activeDialogue;
+        private bool _subscribed;
         private bool _skipDialogue;
 
         private void Awake()
@@ -42,6 +47,7 @@ namespace Code.Scripts.Views.GameplayViews
 
         public async UniTask Hide()
         {
+            UnsubscribeOnLocalizationChange();
             await CanvasGroupUtil.Hide(_canvasGroup, _showDuration);
         }
         
@@ -52,6 +58,8 @@ namespace Code.Scripts.Views.GameplayViews
 
         public async UniTask ShowDialogue(DialogueContainer dialogues)
         {
+            SubscribeOnLocalizationChange();
+            
             _activeDialogue = dialogues;
             
             var startDialogue = _activeDialogue.Dialogues.FirstOrDefault(x => x.Guid == dialogues.StartDialogueGuid);
@@ -69,17 +77,30 @@ namespace Code.Scripts.Views.GameplayViews
             await Show(startDialogue);
         }
 
+        private void UpdateText(string _ = null)
+        {
+            _dialogue.text = $"{GetLocalizedSpeakerName()} {_dialogText.GetLocalizedString()}";
+        }
+
+        private string GetLocalizedSpeakerName()
+        {
+            return $"{_speakerName.GetLocalizedString()}:";
+        }
+
         private async UniTask Show(DialogueData dialogue)
         {
             ClearOptions();
             
             var speaker = GetSpeaker(dialogue.SpeakerId);
-            var characterName = $"{speaker.CharacterName}:";
-            _dialogue.text = $"{characterName} {dialogue.Text}";
-            _dialogue.maxVisibleCharacters = characterName.Length;
+            _speakerName.TableEntryReference = speaker.LocalizedName.TableEntryReference;
+            _dialogText.TableEntryReference = dialogue.LocalizedText.TableEntryReference;
+            
+            var speakerNameLength = GetLocalizedSpeakerName().Length;
+            UpdateText();
+            _dialogue.maxVisibleCharacters = speakerNameLength;
 
             IsDialogueTyping = true;
-            for (int i = characterName.Length; i < _dialogue.text.Length + 1; i++)
+            for (int i = speakerNameLength; i < _dialogue.text.Length + 1; i++)
             {
                 if (_skipDialogue)
                 {
@@ -177,6 +198,30 @@ namespace Code.Scripts.Views.GameplayViews
             }
             
             _options.Clear();
+        }
+
+        private void SubscribeOnLocalizationChange()
+        {
+            if (_subscribed)
+            {
+                return;
+            }
+
+            _subscribed = true;
+            
+            _dialogText.StringChanged += UpdateText;
+        }
+
+        private void UnsubscribeOnLocalizationChange()
+        {
+            if (!_subscribed)
+            {
+                return;
+            }
+
+            _subscribed = false;
+            
+            _dialogText.StringChanged -= UpdateText;
         }
     }
 }

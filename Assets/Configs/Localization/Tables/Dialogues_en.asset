@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Dialogues_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 045efc40dfad33f4c9b03f1fbe6429ea, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 76858415857664
+    m_Localized: Anyone who walks on the bridge of death must answer 3 questions
+      if they want to get to the other side.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76858445217792
+    m_Localized: Ask old man, I'm not afraid!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76858445217793
+    m_Localized: Well, no way
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76858445217794
+    m_Localized: I'm not sure
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76858445217795
+    m_Localized: What's your name?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76858445217796
+    m_Localized: Sir Lancelot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76858445217797
+    m_Localized: Sir Robin of Camelot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76858445217798
+    m_Localized: Arthur, King of the Britons
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76858445217799
+    m_Localized: What is the speed of a swallow without a load?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76858445217800
+    m_Localized: I don't know..
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76858445217801
+    m_Localized: Are you talking about an African or a European swallow?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76858445217802
+    m_Localized: What?? I don't know...
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

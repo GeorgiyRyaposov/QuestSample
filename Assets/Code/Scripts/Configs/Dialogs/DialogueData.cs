@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Localization;
 
 namespace Code.Scripts.Configs.Dialogs
 {
@@ -8,7 +9,7 @@ namespace Code.Scripts.Configs.Dialogs
     {
         public string Guid;
         public string SpeakerId;
-        public string Text;
+        public LocalizedString LocalizedText;
         public Vector2 NodePosition;
     }
 }

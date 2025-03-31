@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: Dialogues Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: Dialogues
+  m_TableCollectionNameGuidString: 045efc40dfad33f4c9b03f1fbe6429ea
+  m_Entries:
+  - m_Id: 76858415857664
+    m_Key: bridge of death intro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76858445217792
+    m_Key: bridge of death intro option yes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76858445217793
+    m_Key: bridge of death intro option no
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76858445217794
+    m_Key: bridge of death intro option not sure
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76858445217795
+    m_Key: bridge of death name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76858445217796
+    m_Key: bridge of death Lancelot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76858445217797
+    m_Key: bridge of death Robin
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76858445217798
+    m_Key: bridge of death Arthur
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76858445217799
+    m_Key: bridge of death what speed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76858445217800
+    m_Key: bridge of death dont know
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76858445217801
+    m_Key: bridge of death are you talking
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76858445217802
+    m_Key: bridge of death what
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 4045874739651805479
+  references:
+    version: 2
+    RefIds:
+    - rid: 4045874739651805479
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1743389769140

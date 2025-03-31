@@ -7,6 +7,16 @@ DialogueNode #title {
 DialogueNode {
     background-color: rgba(29, 29, 29, 1);
     width: 250px;
+    flex-wrap: wrap;
+}
+
+.wrap {
+    white-space: normal;
+    font-size: 16px;
+    -unity-font-style: bold;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
 }
 
 DialogueOptionNode #title {

@@ -21,15 +21,34 @@ MonoBehaviour:
   Dialogues:
   - Guid: 836167e0-1579-42da-b263-fba522bc8daf
     SpeakerId: 12e59a51-eb3f-4f0a-b118-c7d491550246
-    Text: Hello
+    LocalizedText:
+      m_TableReference:
+        m_TableCollectionName: Dialogues
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: bridge of death name
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     NodePosition: {x: 443, y: 224}
   Options:
   - Guid: 10b6a056-3f58-4c60-827b-434879ed1e40
     BaseDialogueGuid: 836167e0-1579-42da-b263-fba522bc8daf
     TargetDialogueGuid: 
-    Text: Hi
-    NodePosition: {x: 731, y: 250}
+    LocalizedText:
+      m_TableReference:
+        m_TableCollectionName: Dialogues
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: bridge of death dont know
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    NodePosition: {x: 770, y: 159}
   Comments: []
   DialoguesFlagsRequirements: []
   OptionsFlagsRequirements: []
   OptionsFlagsModifiers: []
+  references:
+    version: 2
+    RefIds: []

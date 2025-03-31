@@ -9,6 +9,7 @@ using Code.Scripts.Configs.Dialogs;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.Localization;
 using UnityEngine.UIElements;
 
 namespace Code.Editor.DialogsEditor
@@ -56,6 +57,7 @@ namespace Code.Editor.DialogsEditor
             
             container.DialoguesFlagsRequirements.Clear();
             container.OptionsFlagsRequirements.Clear();
+            container.OptionsFlagsModifiers.Clear();
             
             container.Options.Clear();
             foreach (var node in _graphView.nodes)
@@ -78,7 +80,7 @@ namespace Code.Editor.DialogsEditor
                     Guid = optionNode.Guid,
                     BaseDialogueGuid = dialogueFrom?.Guid,
                     TargetDialogueGuid = dialogueTo?.Guid,
-                    Text = optionNode.Text,
+                    LocalizedText = new LocalizedString(optionNode.TableId, optionNode.TextId),
                     NodePosition = node.GetPosition().position
                 });
 
@@ -121,8 +123,8 @@ namespace Code.Editor.DialogsEditor
                 {
                     Guid = dialogueNode.Guid,
                     SpeakerId = dialogueNode.SpeakerId,
-                    Text = dialogueNode.Text,
                     NodePosition = node.GetPosition().position,
+                    LocalizedText = new LocalizedString(dialogueNode.TableId,  dialogueNode.TextId),
                 });
                 
                 if (dialogueNode.FlagRequirement.HasValue)
