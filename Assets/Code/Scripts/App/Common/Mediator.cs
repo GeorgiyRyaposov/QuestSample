@@ -20,12 +20,12 @@ namespace Code.Scripts.App.Common
         public static InGameMenuView InGameMenuView;
         
         /// <summary>
-        /// Do not cache, lazy ass edition
+        /// Do not cache
         /// </summary>
         public static GameStateData GameState { get; private set; }
 
         /// <summary>
-        /// Do not cache, lazy ass edition
+        /// Do not cache
         /// </summary>
         public static SessionStateData SessionState { get; private set; } = new();
         public static InputState InputState { get; private set; }

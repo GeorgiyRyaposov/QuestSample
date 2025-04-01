@@ -61,7 +61,6 @@ namespace Code.Scripts.App.Init
                 new StageService(),
                 new DialoguesService(),
                 new BlackboardService(),
-                new LocalizationService(),
             };
             
             foreach (var service in services)
